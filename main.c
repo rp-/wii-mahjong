@@ -84,17 +84,17 @@ bool loadConfig() {
 	}
 
 	fclose(fp);
-	
+
 	return true;
 }
 
 void saveConfig() {
 	if(!fatInitDefault()) return;
- 
+
 	FILE *fp;
 
 	if((fp = fopen("sd:/mahjongg.cfg","wb"))==NULL) return;
-	
+
 	// first write the version number so we can identify this on load in case it changes
 	putc(8,fp);
 
@@ -162,7 +162,7 @@ void WiiResetPressed()
 {
 	HWButton = SYS_RETURNTOMENU;
 }
- 
+
 /**
  * Callback for the power button on the Wii.
  */
@@ -170,7 +170,7 @@ void WiiPowerPressed()
 {
 	HWButton = SYS_POWEROFF_STANDBY;
 }
- 
+
 /**
  * Callback for the power button on the Wiimote.
  * @param[in] chan The Wiimote that pressed the button
@@ -182,7 +182,7 @@ void WiimotePowerPressed(s32 chan)
 
 
 int main(){
-   
+
 	u8 *tex_ptrone=GRRLIB_LoadTexture(handpointerred_png);
 	u8 *tex_ptrtwo=GRRLIB_LoadTexture(handpointergreen_png);
 	u8 *tex_back=GRRLIB_LoadJPG(bigmenuback_jpg, bigmenuback_jpg_size);
@@ -205,9 +205,9 @@ int main(){
 
 	if (MODPlay_SetMOD (&mod_track, dojo_dan_oriental_mod) < 0 ) // set the MOD song
       {
-        MODPlay_Unload (&mod_track);   
+        MODPlay_Unload (&mod_track);
       }
-	else  
+	else
 	  {
 		// set the music volume to the minimum so we don't hear the music before saved volume is known
 	    MODPlay_SetVolume( &mod_track, 0,0);
@@ -217,7 +217,7 @@ int main(){
 	WPAD_SetDataFormat(WPAD_CHAN_ALL, WPAD_FMT_BTNS_ACC_IR);
 
 	WPAD_SetVRes(WPAD_CHAN_ALL, rmode->fbWidth, rmode->xfbHeight);
-	
+
 	// try to load a saved config, if none then get Wii language menu
 	if(!loadConfig()) {
 		// get the language of the Wii menu and map this to the Mahjongg Wii languages
@@ -225,7 +225,7 @@ int main(){
 	}
 
 	MODPlay_SetVolume( &mod_track, opt_music, opt_music);
-	
+
 	// setup the layouts array for use in menu and game
 	setupLayouts();
 
@@ -241,7 +241,7 @@ int main(){
 
 		wd_one = WPAD_Data(0);
 		wd_two = WPAD_Data(1);
-		
+
 		switch(main_mode) {
 			case STARTUP :
 				GRRLIB_FillScreen(0xFF000000);
@@ -278,7 +278,7 @@ int main(){
 						if(opt_tileset==SPACE)
 							MODPlay_SetMOD (&mod_track, nebulos_mod);
 						else
-							MODPlay_SetMOD (&mod_track, sushi_mod);						
+							MODPlay_SetMOD (&mod_track, sushi_mod);
 						MODPlay_SetVolume( &mod_track, opt_music, opt_music);
 						MODPlay_Start (&mod_track);
 					}
@@ -304,12 +304,12 @@ int main(){
 				}
 				break;
 		}
-		
+
 		// alternate which pointer is on top every frame to not give the advantage to player one in two player mode
 		static int ticktock=0;
-		
+
 		ticktock++;
-		
+
 		if(wd_two->ir.valid && ticktock%2==0) {
 			if(main_mode==GAME && whatGameMode()==ONE_PLAYER_GAME) {
 				// don't display second pointer in one player mode
@@ -317,7 +317,7 @@ int main(){
 			else
 				GRRLIB_DrawColImg(wd_two->ir.x - 9,wd_two->ir.y - 7,68,80,tex_ptrtwo,0,1,1,0xEEFFFFFF);
 		}
-		
+
 		if(wd_one->ir.valid) {
 			GRRLIB_DrawColImg(wd_one->ir.x - 9,wd_one->ir.y - 7,68,80,tex_ptrone,0,1,1,0xEEFFFFFF);
 		}
@@ -329,14 +329,14 @@ int main(){
 			else
 				GRRLIB_DrawColImg(wd_two->ir.x - 9,wd_two->ir.y - 7,68,80,tex_ptrtwo,0,1,1,0xEEFFFFFF);
 		}
-		
+
 		if(wd_one->btns_h & WPAD_BUTTON_1) {
 			GRRLIB_ScrShot("MahjonggWii_Screen_%y%m%d_%H%M%S.png",time(NULL));
 		}
 
 		if(HWButton)
 			break;
-		
+
 		GRRLIB_Render();
 	}
 

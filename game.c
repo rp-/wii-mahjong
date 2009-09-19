@@ -1,7 +1,7 @@
 /*===========================================
 		Mahjongg Solitaire Wii
 		Code     : Justin Wood
-		
+
 		Game class
  ============================================*/
 #include "game.h"
@@ -146,18 +146,18 @@ void initGame(int gm) {
 
 	tex_numbers=GRRLIB_LoadTexture(gamenumbers_png);
 	GRRLIB_SetFont(tex_numbers,20, 24, "1234567890:x-", 13, 1, numwidths, 0);
-	
+
 	int strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+1]);
 	menupos[0]=605-strsize;
 	menupos[2]=strsize;
-	
+
 	strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+2]);
 	shufflepos[0]=605-strsize;
 	shufflepos[2]=strsize;
 
 	restartpos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+6]);
 	newgamepos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+7]);
-	
+
 	setupGame();
 }
 
@@ -187,13 +187,13 @@ void setLayout(int layoutNum) {
 
 void initGrid() {
 	int l,x,y,z,pos=0;
-	
+
 	// clear the grid
 	for(z=0;z<MAX_LAYERS;z++)
 		for(x=0;x<MAX_WIDTH;x++)
 			for(y=0;y<MAX_HEIGHT;y++)
 				grid[x][y][z]=BLANK;
-				
+
 	// put placeholders on the grid for the tiles
 	for(l=0;l<MAX_TILES;l++) {
 		x=mtl[pos++];
@@ -220,7 +220,7 @@ void resetToPlaces() {
 void checkSelectable() {
 	int x,y,z;
 	for(x=0;x<MAX_TILES;x++) selectable[x]=false;
-	
+
 	for(z=MAX_LAYERS-1;z>=0;z--) {
 		for(y=0;y<MAX_HEIGHT;y++) {
 			for(x=0;x<MAX_WIDTH;x++) {
@@ -241,7 +241,7 @@ bool isSelectable(int x, int y, int z) {
 	}
 
 	int tot;
-	
+
 	// check left hand side
 	if(x-2>=0) {
 		tot=0;
@@ -322,13 +322,13 @@ void setupGame() {
 	for(x=34;x<42;x++) {
 		tiles[z++]=x;
 	}
-	
+
 	tot=0;
 	dif=2;
-	
+
 	score[0]=0;
 	score[1]=0;
-	
+
 	for(x=0;x<4;x++) {
 		clearSelected(x);
 		fade[x].fading=false;
@@ -336,10 +336,10 @@ void setupGame() {
 
 	clearSelected(4);
 	clearSelected(5);
-	
+
 	multi[0]=0;
 	multi[1]=0;
-	
+
 	shuffleretries=0;
 
 	initGrid();
@@ -374,12 +374,12 @@ void mixPairs(int shuffles) {
 		while(tiles[t1]==BLANK) {
 			t1=((rand()%tilesLeft)/2)*2;
 		}
-		
+
 		t2=((rand()%tilesLeft)/2)*2;
 		while(tiles[t2]==BLANK || t1==t2) {
 			t2=((rand()%tilesLeft)/2)*2;
 		}
-		
+
 		dummy=tiles[t1];
 		tiles[t1]=tiles[t2];
 		tiles[t2]=dummy;
@@ -397,15 +397,15 @@ void drawGame(){
 	GRRLIB_DrawImg(0, 0, 640, 480, tex_gameback, 0, 1, 1, 255);
 
 	drawBoard();
-	
+
 	if(gamemode==TWO_PLAYER_VERSUS) {
 		drawScores();
 	}
 	else {
-		drawTime();		
+		drawTime();
 		drawMatches();
 	}
-	
+
 	for(x=0;x<4;x++) {
 		if(fade[x].fading) {
 			drawRichTile(fade[x].x,fade[x].y,fade[x].tile,fade[x].scale,fade[x].alpha);
@@ -418,14 +418,14 @@ void drawGame(){
 			}
 		}
 	}
-	
+
 	switch(game_state) {
-		case GAME_PLAY :			
+		case GAME_PLAY :
 			drawPauseIcon();
 			if(gamemode!=TWO_PLAYER_VERSUS) {
 				drawHintIcon();
 			}
-			
+
 			break;
 		case GAME_PAUSED :
 			GRRLIB_FillScreen(0xAA000000);
@@ -460,7 +460,7 @@ void drawGame(){
 
 			if(tilesToPlace>0)
 				placeTilePair();
-				
+
 			if(tot*2.5<=255) {
 				GRRLIB_GPrintf(320, 220,0xFFFFFFFF- (0x01000000*(tot*2.5)),1+((float)tot)/16,1+((float)tot)/32, ALIGN_CENTRE,CUR_FONT(true),curtext[REMARK_POS+2]);
 			}
@@ -468,7 +468,7 @@ void drawGame(){
 			break;
 		case GAME_FINISHED :
 			GRRLIB_FillScreen(0xAA000000);
-						
+
 			if(gamemode==TWO_PLAYER_VERSUS) {
 				if(score[0]>score[1]) {
 					GRRLIB_DrawImg(185+imgx,103,260,220,tex_winnerone, 0, 1, 1, 255);
@@ -509,7 +509,7 @@ void drawGame(){
 			}
 
 			GRRLIB_GPrintf(newgamepos[0], newgamepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(newgameover),curtext[REMARK_POS+7]);
-			
+
 			GRRLIB_GPrintf(menupos[0], menupos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(menuover),curtext[REMARK_POS+1]);
 			break;
 		case GAME_NOMORE :
@@ -529,7 +529,7 @@ void drawGame(){
 				imgx-=imgacc;
 				imgacc--;
 			}
-			
+
 			GRRLIB_GPrintf(restartpos[0], restartpos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(restartover),curtext[REMARK_POS+6]);
 
 			GRRLIB_GPrintf(menupos[0], menupos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(menuover),curtext[REMARK_POS+1]);
@@ -566,7 +566,7 @@ void placeTilePair() {
 		}
 		return;
 	}
-	
+
 	// place tile 1 in the grid
 	grid[mtl[tile1*3]][mtl[tile1*3+1]][mtl[tile1*3+2]]=--tilesToPlace;
 
@@ -606,11 +606,11 @@ void placeTilePair() {
 // if it is then save the grid in case we cannot competely place the tiles at all
 void checkAndSaveGrid() {
 	if(tilesToPlace>=bestGuessNum) return;
-	
+
 	bestGuessNum=tilesToPlace;
 
 	int x;
-	
+
 	for(x=0;x<MAX_TILES;x++) {
 		bestGuess[x]=grid[mtl[x*3]][mtl[x*3+1]][mtl[x*3+2]];
 	}
@@ -621,11 +621,11 @@ void checkAndSaveGrid() {
 // not placing two next to each other that are not accessible
 bool checkWithoutTile1(int tile1, int tile2) {
 	grid[mtl[tile1*3]][mtl[tile1*3+1]][mtl[tile1*3+2]]=PLACE;
-	
+
 	bool res = checkTile(tile2);
-	
+
 	grid[mtl[tile1*3]][mtl[tile1*3+1]][mtl[tile1*3+2]]=tilesToPlace;
-	
+
 	return res;
 }
 
@@ -633,16 +633,16 @@ bool checkWithoutTile1(int tile1, int tile2) {
 // this can be resolved later when there are less tiles left
 void placeRemainingtiles() {
 	int x,xe;
-	
+
 	// set grid up with the best guess so far
 	tilesToPlace=MAX_TILES;
 	for(x=0;x<MAX_TILES;x++) {
 		grid[mtl[x*3]][mtl[x*3+1]][mtl[x*3+2]]=bestGuess[x];
 		if(bestGuess[x]!=PLACE) tilesToPlace--;
 	}
-	
+
 	xe=tilesToPlace;
-	
+
 	for(x=0;x<xe;x++) {
 		int tile = getTile();
 		grid[mtl[tile*3]][mtl[tile*3+1]][mtl[tile*3+2]]=--tilesToPlace;
@@ -654,7 +654,7 @@ int getTile() {
 	int x=mtl[tile*3];
 	int y=mtl[tile*3+1];
 	int z=mtl[tile*3+2];
-	
+
 	// get tiles until we find one that we can place
 	while(grid[x][y][z]!=PLACE) {
 		tile=rand()%MAX_TILES;
@@ -670,7 +670,7 @@ bool checkTile(int tile) {
 	int x=mtl[tile*3];
 	int y=mtl[tile*3+1];
 	int z=mtl[tile*3+2];
-	
+
 	//if z>0 check that tiles below are already placed
 	if(z>0 && !isCovered(x,y,z)) {
 		return false;
@@ -680,34 +680,34 @@ bool checkTile(int tile) {
 	if(x>1) {
 		if(grid[x-2][y][z]<BLANK) return true;
 		if(y==0 && grid[x-2][y+1][z]<BLANK) return true;
-		
+
 		if(y>0) {
 			if(grid[x-2][y-1][z]<BLANK && grid[x-2][y+1][z]<BLANK) return true;
 			if(grid[x-2][y-1][z]<BLANK && grid[x-2][y+1][z]==BLANK) return true;
 			if(grid[x-2][y-1][z]==BLANK && grid[x-2][y+1][z]<BLANK) return true;
 		}
 	}
-	
+
 	// check that we have tiles immediately to the right
 	if(x<MAX_WIDTH-2) {
 		if(grid[x+2][y][z]<BLANK) return true;
 		if(y==0 && grid[x+2][y+1][z]<BLANK) return true;
-		
+
 		if(y>0) {
 			if(grid[x+2][y-1][z]<BLANK && grid[x+2][y+1][z]<BLANK) return true;
 			if(grid[x+2][y-1][z]<BLANK && grid[x+2][y+1][z]==BLANK) return true;
 			if(grid[x+2][y-1][z]==BLANK && grid[x+2][y+1][z]<BLANK) return true;
 		}
 	}
-	
+
 	// if any other placed tiles on the same row return false
 	//
 	// tilebreak signifies that there is a break of tiles on the current row
 	// tileplace indicates that there are two unplaced tiles on the current row
-	// this works out that 
-	
+	// this works out that
+
 	int col;
-	
+
 	// check left of the selected
 	bool tilebreak=false,tileplace=false;
 	int blank,yy;
@@ -730,7 +730,7 @@ bool checkTile(int tile) {
 			if((yy>0 && grid[col][yy-1][z]==BLANK) || yy==0) blank--;
 			if((yy<MAX_HEIGHT-2 && grid[col][yy+1][z]==BLANK) || yy>=MAX_HEIGHT-2) blank--;
 			if(blank==0) tilebreak=true;
-			
+
 			// see if line moves up or down or finishes
 			if(grid[col][yy][z]==PLACE) {
 				// do nothing
@@ -802,7 +802,7 @@ bool checkTile(int tile) {
 		if(tileplace) return false;
 		if(tilebreak) return true;
 	}
-		
+
 	return true;
 }
 
@@ -810,17 +810,17 @@ bool checkTile(int tile) {
 boolean isCovered(int x,int y,int z) {
 	// check directly below
 	if(grid[x][y][z-1]<BLANK) return true;
-	
+
 	// check if above and below
 	if(y>0 && y<MAX_HEIGHT-1 && grid[x][y-1][z-1]<BLANK && grid[x][y+1][z-1]<BLANK) {
 		return true;
 	}
-	
+
 	// check if to the left and right
 	if(x>0 && x<MAX_WIDTH-1 && grid[x-1][y][z-1]<BLANK && grid[x+1][y][z-1]<BLANK) {
 		return true;
 	}
-	
+
 	// if we have one above and two diagonally below
 	if(x>0 && x<MAX_WIDTH-1 && grid[x][y-1][z-1]<BLANK && grid[x-1][y+1][z-1]<BLANK && grid[x+1][y+1][z-1]<BLANK) {
 		return true;
@@ -830,7 +830,7 @@ boolean isCovered(int x,int y,int z) {
 	if(x>0 && x<MAX_WIDTH-1 && grid[x][y+1][z-1]<BLANK && grid[x-1][y-1][z-1]<BLANK && grid[x+1][y-1][z-1]<BLANK) {
 		return true;
 	}
-	
+
 	// check if four tiles cover this one
 	if(y>0 && y<MAX_HEIGHT-1 && x>0 && x<MAX_WIDTH-1) {
 		if(grid[x-1][y-1][z-1]<BLANK && grid[x-1][y+1][z-1]<BLANK && grid[x+1][y-1][z-1]<BLANK && grid[x+1][y+1][z-1]<BLANK) {
@@ -891,7 +891,7 @@ void drawTime() {
 		difTime= curTime - startTime;
 	char str[6];
 	strftime(str,15,"%M:%S",localtime(tilesLeft==0?&endTime:&difTime));
-	
+
 	GRRLIB_GPrintf(592,72,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,str);
 }
 
@@ -923,7 +923,7 @@ void drawRichTile(f32 xpos, f32 ypos, unsigned char tile,f32 scale,u8 alpha) {
 // deal with wiimote and return true if return to the menu
 bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two) {
 	if(game_state==GAME_BOARDINIT) return false;
-	
+
 	if(game_state==GAME_FINISHED || game_state==GAME_NOMORE) {
 		if((wd_one->ir.x)>menupos[0] && (wd_one->ir.x)<(menupos[0]+menupos[2]) && (wd_one->ir.y)>menupos[1] && (wd_one->ir.y)<(menupos[1]+menupos[3]))
 			menuover=true;
@@ -939,7 +939,7 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 			restartover=true;
 		else
 			restartover=false;
-		
+
 		if(tilesLeft>0) {
 			if((wd_one->ir.x)>shufflepos[0] && (wd_one->ir.x)<(shufflepos[0]+shufflepos[2]) && (wd_one->ir.y)>shufflepos[1] && (wd_one->ir.y)<(shufflepos[1]+shufflepos[3])) {
 				shuffleover=true;
@@ -955,23 +955,23 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 			else
 				shuffleover=false;
 		}
-		
+
 		if(btns_one & WPAD_BUTTON_A) {
 			// if user selects menu then return true to tell main to kill game and start menu
 			if(menuover && btns_one & WPAD_BUTTON_A) {
 				return true;
 			}
-			
+
 			if(restartover || newgameover) {
 				setupGame();
 				restartover=false;
 				newgameover=false;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	if(game_state==GAME_SHUFFLE) {
 		if (btns_one & WPAD_BUTTON_HOME) {
 			return true;
@@ -1011,7 +1011,7 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 
 	// button A selects a tile
 	if(btns_one & WPAD_BUTTON_A) {
-	
+
 		// if we are over the pause icon then pause or unpause and return
 		if(pauseover) {
 			if(game_state==GAME_PAUSED) {
@@ -1025,7 +1025,7 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 			}
 			return false;
 		}
-		
+
 		if(game_state==GAME_PAUSED) {
 			if(restartover) {
 				setupGame();
@@ -1039,12 +1039,12 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 			return false;
 		}
 
-		
+
 		selectProcessing(wd_one, 0);
 
 		return false;
 	}
-	
+
 	if(gamemode!=ONE_PLAYER_GAME && btns_two & WPAD_BUTTON_A) {
 		selectProcessing(wd_two, 1);
 		return false;
@@ -1066,7 +1066,7 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 	if (btns_one & WPAD_BUTTON_HOME) {
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -1080,7 +1080,7 @@ void selectProcessing(WPADData *wd, int player) {
 		// no tile selected so return
 		return;
 	}
-	
+
 	if(sel[4].type!=SEL_NONE) {
 		clearSelected(4);
 		clearSelected(5);
@@ -1118,7 +1118,7 @@ void selectProcessing(WPADData *wd, int player) {
 			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
 		return;
 	}
-	
+
 	// ok so this is the second selection for this player so lets deal with that
 
 	// check that this player hasn't selected the same piece if they have then deselect it
@@ -1158,19 +1158,19 @@ void removeMatched(int player,int s1, int s2) {
 	removeTile(s2);
 	checkSelectable();
 	tilesLeft-=2;
-	
+
 	// rumble the pad that has matched two tiles
 	if(opt_rumble) WPAD_Rumble(player==0?WPAD_CHAN_0:WPAD_CHAN_1, 1);
-	
+
 // This is used to test the finish sequence
 //	tilesLeft=0;
 //	score[1]=score[0];
-	
+
 	if(tilesLeft==0) {
 		finishGame();
 		return;
 	}
-	
+
 	if(!goesLeft()) {
 		// if there are no goals left and only two tiles then they must be over each other so finish the game
 		if(tilesLeft==2) {
@@ -1266,7 +1266,7 @@ void finishGame() {
 			totals[0]++;
 			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 11000, 0,&a_yokatta_raw, a_yokatta_raw_size, opt_sound, opt_sound, NULL);
 		}
-		else 
+		else
 		if(score[1]>score[0]) {
 			totals[1]++;
 			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 11000, 0,&yatta_raw, yatta_raw_size, opt_sound, opt_sound, NULL);
@@ -1296,7 +1296,7 @@ bool selectTile(f32 x, f32 y,int selnum) {
 				return true;
 			}
 			if(selectExactTile(tx-1,ty,z,selnum)) {
-				return true;				
+				return true;
 			}
 			if(selectExactTile(tx,ty-1,z,selnum)) {
 				return true;
@@ -1347,13 +1347,13 @@ int calcScore(int player) {
 
 	// normal tiles only five points
 	if(tile<27) return 5*multi[player];
-	
-	// Directions 10 points	
+
+	// Directions 10 points
 	if(tile<31) return 10*multi[player];
-	
+
 	// Dragons twenty points
 	if(tile<34) return 20*multi[player];
-	
+
 	// Seasons and flowers 15 points
 	return 10*multi[player];
 }
@@ -1372,16 +1372,16 @@ bool goesLeft() {
 			if(openTiles[(int) realTileNum(tiles[x])]>1) matches++;
 		}
 	}
-	
+
 	if(matches>0) return true;
-	
+
 	endTime=time(NULL)-startTime;
 	return false;
 }
 
 void findHint() {
 	int tn,x,y,z;
-	
+
 	if(!goesLeft()) {
 		SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
 		return;
@@ -1391,9 +1391,9 @@ void findHint() {
 	while(openTiles[tn]<2) {
 		tn=rand()%36;
 	}
-	
+
 	int s=4;
-	
+
 	for(z=MAX_LAYERS-1;z>=0;z--) {
 		for(y=0;y<MAX_HEIGHT;y++) {
 			for(x=0;x<MAX_WIDTH;x++) {
@@ -1430,22 +1430,22 @@ void compressTiles() {
 			tiles[y]=BLANK;
 			tiles[y+1]=BLANK;
 		}
-		
+
 		// check if one of the tile pairs is blank and find the other one
 		if(tiles[x]==BLANK || tiles[x+1]==BLANK) {
 			int z;
-			if(tiles[x]!=BLANK) { 
+			if(tiles[x]!=BLANK) {
 				z=realTileNum(tiles[x]);
 			} else {
 				z=realTileNum(tiles[x+1]);
 			}
-			
+
 			// find matching tile
 			y=x+2;
 			while(realTileNum(tiles[y])!=z && y<MAX_TILES) {
 				y++;
 			}
-			
+
 			// replace blank tile with found match
 			if(tiles[x]==BLANK)
 				tiles[x]=tiles[y];
@@ -1461,7 +1461,7 @@ void compressTiles() {
 char realTileNum(char tileNum) {
 	if(tileNum<34)
 		return tileNum;
-	
+
 	return (tileNum-34)/4+34;
 }
 

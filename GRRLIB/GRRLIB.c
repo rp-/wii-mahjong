@@ -38,7 +38,7 @@ inline void GRRLIB_FillScreen(u32 color){
 inline void GRRLIB_Plot(f32 x,f32 y, u32 color){
    Vector  v[]={{x,y,0.0f}};
    GXColor c[]={GRRLIB_Splitu32(color)};
-	
+
 	GRRLIB_NPlot(v,c,1);
 }
 void GRRLIB_NPlot(Vector v[],GXColor c[],long n){
@@ -83,7 +83,7 @@ static void RawTo4x4RGBA(const unsigned char *src, void *dst, const unsigned int
 	unsigned int ar = 0;
 	unsigned int gb = 0;
 	unsigned char *p = (unsigned char*)dst;
-	
+
 	for (block = 0; block < height; block += 4) {
 		for (i = 0; i < width; i += 4) {
 			/* Alpha and Red */
@@ -91,11 +91,11 @@ static void RawTo4x4RGBA(const unsigned char *src, void *dst, const unsigned int
 				for (ar = 0; ar < 4; ++ar) {
 					/* Alpha pixels */
 					*p++ = 255;
-					/* Red pixels */	
+					/* Red pixels */
 					*p++ = src[((i + ar) + ((block + c) * width)) * 3];
 				}
 			}
-			
+
 			/* Green and Blue */
 			for (c = 0; c < 4; ++c) {
 				for (gb = 0; gb < 4; ++gb) {
@@ -110,7 +110,7 @@ static void RawTo4x4RGBA(const unsigned char *src, void *dst, const unsigned int
 }
 
 /* NOTE: This loads a jpeg into a 4x4RGBA texture, and as such you wont
- * reduce your memory usage by using jpg instead of a png, but it is 
+ * reduce your memory usage by using jpg instead of a png, but it is
  * still a useful function to have :) */
 extern void *GRRLIB_LoadJPG(const unsigned char *src, unsigned int size) {
 	struct jpeg_decompress_struct cinfo;
@@ -188,7 +188,7 @@ u8 * GRRLIB_LoadTexture(const unsigned char my_png[]) {
 
 inline void GRRLIB_DrawImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], float degrees, float scaleX, f32 scaleY, u8 alpha ){
    GXTexObj texObj;
-	
+
 	GX_InitTexObj(&texObj, data, width,height, GX_TF_RGBA8,GX_CLAMP, GX_CLAMP,GX_FALSE);
 	//GX_InitTexObjLOD(&texObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, 0, 0, GX_ANISO_1);
 	GX_LoadTexObj(&texObj, GX_TEXMAP0);
@@ -208,20 +208,20 @@ inline void GRRLIB_DrawImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[],
 	guMtxTransApply(m,m, xpos+width,ypos+height,0);
 	guMtxConcat (GXmodelView2D, m, mv);
 	GX_LoadPosMtxImm (mv, GX_PNMTX0);
-	
+
 	GX_Begin(GX_QUADS, GX_VTXFMT0,4);
   	GX_Position3f32(-width, -height,  0);
   	GX_Color4u8(0xFF,0xFF,0xFF,alpha);
   	GX_TexCoord2f32(0, 0);
-  
+
   	GX_Position3f32(width, -height,  0);
  	GX_Color4u8(0xFF,0xFF,0xFF,alpha);
   	GX_TexCoord2f32(1, 0);
-  
+
   	GX_Position3f32(width, height,  0);
 	GX_Color4u8(0xFF,0xFF,0xFF,alpha);
   	GX_TexCoord2f32(1, 1);
-  
+
   	GX_Position3f32(-width, height,  0);
 	GX_Color4u8(0xFF,0xFF,0xFF,alpha);
   	GX_TexCoord2f32(0, 1);
@@ -237,7 +237,7 @@ inline void GRRLIB_DrawColImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data
    GXTexObj texObj;
 
     GXColor c = GRRLIB_Splitu32(col);
-	
+
 	GX_InitTexObj(&texObj, data, width,height, GX_TF_RGBA8,GX_CLAMP, GX_CLAMP,GX_FALSE);
 	//GX_InitTexObjLOD(&texObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, 0, 0, GX_ANISO_1);
 	GX_LoadTexObj(&texObj, GX_TEXMAP0);
@@ -257,20 +257,20 @@ inline void GRRLIB_DrawColImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data
 	guMtxTransApply(m,m, xpos+width,ypos+height,0);
 	guMtxConcat (GXmodelView2D, m, mv);
 	GX_LoadPosMtxImm (mv, GX_PNMTX0);
-	
+
 	GX_Begin(GX_QUADS, GX_VTXFMT0,4);
   	GX_Position3f32(-width, -height,  0);
  	GX_Color4u8(c.r,c.g,c.b,c.a);
   	GX_TexCoord2f32(0, 0);
-  
+
   	GX_Position3f32(width, -height,  0);
  	GX_Color4u8(c.r,c.g,c.b,c.a);
   	GX_TexCoord2f32(1, 0);
-  
+
   	GX_Position3f32(width, height,  0);
  	GX_Color4u8(c.r,c.g,c.b,c.a);
   	GX_TexCoord2f32(1, 1);
-  
+
   	GX_Position3f32(-width, height,  0);
  	GX_Color4u8(c.r,c.g,c.b,c.a);
   	GX_TexCoord2f32(0, 1);
@@ -288,7 +288,7 @@ f32 s1= frame/maxframe;
 f32 s2= (frame+1)/maxframe;
 f32 t1=0;
 f32 t2=1;
-	
+
 	GX_InitTexObj(&texObj, data, width*maxframe,height, GX_TF_RGBA8,GX_CLAMP, GX_CLAMP,GX_FALSE);
 	GX_InitTexObjLOD(&texObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, 0, 0, GX_ANISO_1);
 	GX_LoadTexObj(&texObj, GX_TEXMAP0);
@@ -311,15 +311,15 @@ f32 t2=1;
   	GX_Position3f32(-width, -height,  0);
   	GX_Color4u8(0xFF,0xFF,0xFF,alpha);
   	GX_TexCoord2f32(s1, t1);
-  
+
   	GX_Position3f32(width, -height,  0);
  	GX_Color4u8(0xFF,0xFF,0xFF,alpha);
   	GX_TexCoord2f32(s2, t1);
-  
+
   	GX_Position3f32(width, height,  0);
 	GX_Color4u8(0xFF,0xFF,0xFF,alpha);
   	GX_TexCoord2f32(s2, t2);
-  
+
   	GX_Position3f32(-width, height,  0);
 	GX_Color4u8(0xFF,0xFF,0xFF,alpha);
   	GX_TexCoord2f32(s1, t2);
@@ -391,7 +391,7 @@ f32 s1= frame/maxframe;
 f32 s2= (frame+1)/maxframe;
 f32 t1=0;
 f32 t2=1;
-	
+
 	GX_InitTexObj(&texObj, data, width*maxframe,height, GX_TF_RGBA8,GX_CLAMP, GX_CLAMP,GX_FALSE);
 	GX_InitTexObjLOD(&texObj, GX_NEAR, GX_NEAR, 0.0f, 0.0f, 0.0f, 0, 0, GX_ANISO_1);
 	GX_LoadTexObj(&texObj, GX_TEXMAP0);
@@ -414,15 +414,15 @@ f32 t2=1;
   	GX_Position3f32(-width, -height,  0);
   	GX_Color4u8(c.r,c.g,c.b,c.a);
   	GX_TexCoord2f32(s1, t1);
-  
+
   	GX_Position3f32(width, -height,  0);
  	GX_Color4u8(c.r,c.g,c.b,c.a);
   	GX_TexCoord2f32(s2, t1);
-  
+
   	GX_Position3f32(width, height,  0);
 	GX_Color4u8(c.r,c.g,c.b,c.a);
   	GX_TexCoord2f32(s2, t2);
-  
+
   	GX_Position3f32(-width, height,  0);
 	GX_Color4u8(c.r,c.g,c.b,c.a);
   	GX_TexCoord2f32(s1, t2);
@@ -493,11 +493,11 @@ unsigned int convert2UTF8(char *txt) {
 	if(txt[0]<0x80) {
 		return (unsigned int) txt[0];
 	}
-	
+
 	if((txt[0]&0xE0)==0xC0) {
 		return (unsigned int) ((txt[0]&0x1F)<<6) + (txt[1]&0x3F);
 	}
-	
+
 	if((txt[0]&0xF0)==0xE0) {
 		return (unsigned int) ((txt[0]&0x0F)<<12) + ((txt[1]&0x3F)<<6) + (txt[2]&0x3F);
 	}
@@ -505,7 +505,7 @@ unsigned int convert2UTF8(char *txt) {
 	if((txt[0]&0xF8)==0xF0) {
 		return (unsigned int) ((txt[0]&0x0E)<<18) + ((txt[1]&0x3F)<<12) + ((txt[2]&0x3F)<<6) + (txt[3]&0x3F);
 	}
-	
+
 	return 0;
 }
 
@@ -519,9 +519,9 @@ int getNumChars(char *ch) {
 
 int getUTF8CharPos(char *txt, int fnum) {
 	int x,ch;
-	
+
 	unsigned int in = convert2UTF8(txt);
-	
+
 	for(x=0,ch=0;x<strlen(fonts[fnum].char_map);x+=getNumChars(&fonts[fnum].char_map[x]),ch++) {
 		unsigned int out = convert2UTF8(&fonts[fnum].char_map[x]);
 
@@ -544,14 +544,14 @@ int GRRLIB_GPrintf(f32 xpos, f32 ypos, u32 color, f32 zoomx, f32 zoomy, u8 align
     int i,size=0;
     char tmp[1024];
 	int offset=0,pix_size=0;
-	
+
 	if(text==NULL) return 0;
 
     va_list argp;
     va_start(argp, text);
     size = vsprintf(tmp, text, argp);
     va_end(argp);
-	
+
 	// get the width in pixels
     for(i=0;i<size;i+=getNumChars(&tmp[i])) {
 		int charn=getUTF8CharPos(&tmp[i], fnum);
@@ -568,7 +568,7 @@ int GRRLIB_GPrintf(f32 xpos, f32 ypos, u32 color, f32 zoomx, f32 zoomy, u8 align
 			pix_size+=fonts[fnum].char_width;
 		}
 	}
-	
+
 	pix_size*=zoomx;
 
 	// change the x position depending on the alignment
@@ -603,7 +603,7 @@ int GRRLIB_GPrintf(f32 xpos, f32 ypos, u32 color, f32 zoomx, f32 zoomy, u8 align
 			offset+=fonts[fnum].char_width;
 		}
     }
-	
+
 	return pix_size;
 }
 
@@ -639,7 +639,7 @@ int GRRLIB_GetStringWidth(int fnum, const char *text,...) {
     va_start(argp, text);
     size = vsprintf(tmp, text, argp);
     va_end(argp);
-	
+
 	// get the width in pixels
     for(i=0;i<size;i+=getNumChars(&tmp[i])) {
 		int charn=getUTF8CharPos(&tmp[i], fnum);
@@ -678,7 +678,7 @@ void GRRLIB_Printf(f32 xpos, f32 ypos, u8 data[], u32 color, f32 zoom, const cha
 }
 
 void GRRLIB_GXEngine(Vector v[], GXColor c[], long n,u8 fmt){
-   int i=0;	
+   int i=0;
 
 	GX_Begin(fmt, GX_VTXFMT0,n);
 	for(i=0;i<n;i++){
@@ -691,10 +691,10 @@ void GRRLIB_GXEngine(Vector v[], GXColor c[], long n,u8 fmt){
 GXColor GRRLIB_Splitu32(u32 color){
    u8 a,r,g,b;
 
-	a = (color >> 24) & 0xFF; 
-	r = (color >> 16) & 0xFF; 
-	g = (color >> 8) & 0xFF; 
-	b = (color) & 0xFF; 
+	a = (color >> 24) & 0xFF;
+	r = (color >> 16) & 0xFF;
+	g = (color >> 8) & 0xFF;
+	b = (color) & 0xFF;
 
 	return (GXColor){r,g,b,a};
 }
@@ -755,22 +755,22 @@ void GRRLIB_InitVideo () {
     GX_SetVtxDesc(GX_VA_TEX0, GX_NONE);
     GX_SetVtxDesc(GX_VA_POS, GX_DIRECT);
     GX_SetVtxDesc (GX_VA_CLR0, GX_DIRECT);
-    
+
     GX_SetVtxAttrFmt (GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
     GX_SetVtxAttrFmt (GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
     GX_SetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
     GX_SetZMode (GX_FALSE, GX_LEQUAL, GX_TRUE);
-    
+
     GX_InvVtxCache ();
 
     GX_SetNumChans(1);
     GX_SetChanCtrl(GX_COLOR0A0, GX_DISABLE, GX_SRC_REG, GX_SRC_VTX, GX_LIGHTNULL, GX_DF_NONE, GX_AF_NONE);
-    
+
     GX_SetNumTexGens(1);
     GX_SetTevOp (GX_TEVSTAGE0, GX_PASSCLR);
     GX_SetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
     GX_SetTexCoordGen(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY);
-    
+
     GX_InvalidateTexAll();
 
     guMtxIdentity(GXmodelView2D);
@@ -782,17 +782,17 @@ void GRRLIB_InitVideo () {
     GX_SetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_CLEAR);
     GX_SetAlphaUpdate(GX_TRUE);
     GX_SetCullMode(GX_CULL_NONE);
-    
+
 }
 
 void GRRLIB_Widescreen(bool wd_on) {
 	// This is meant to fix widescreen TVs
 	if (wd_on) {
-		rmode->viWidth = 678; 
+		rmode->viWidth = 678;
 		rmode->viXOrigin = (VI_MAX_WIDTH_PAL - 678) / 2;
 	}
 	else {
-		rmode->viWidth = 640; 
+		rmode->viWidth = 640;
 		rmode->viXOrigin = (VI_MAX_WIDTH_PAL - 640) / 2;
 	}
 

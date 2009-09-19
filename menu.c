@@ -81,7 +81,7 @@ int oldz=0;
 void initMenu() {
 	xmusic=soundhs[0][0]+((double)opt_music/64*(soundhs[0][2]-44));
 	xsound=soundhs[1][0]+((double)opt_sound/255*(soundhs[1][2]-44));
-	
+
 	if(opt_lang==-1)
 		initLangMenu();
 	else {
@@ -100,11 +100,11 @@ void setLanguage() {
 
 		tex_letters=GRRLIB_LoadTexture(letters_png);
 		tex_whiteletters=GRRLIB_LoadTexture(letterswhite_png);
-		
+
 		GRRLIB_SetFont(tex_whiteletters,44,48,latin_map,13,4, latinwidths,1);
 		GRRLIB_SetFont(tex_letters,44,48,latin_map,13,4, latinwidths,2);
 	}
-	
+
 	switch(opt_lang) {
 		case ENGLISH :
 			parseMenu((char *)english_lng, english_lng_size);
@@ -132,22 +132,22 @@ void setLanguage() {
 			break;
 		case PORTUGUESE :
 			parseMenu((char *)portuguese_lng, portuguese_lng_size);
-			break;		
+			break;
 		case HUNGARIAN :
 			parseMenu((char *)hungarian_lng, hungarian_lng_size);
-			break;		
+			break;
 		case FINNISH :
 			parseMenu((char *)finnish_lng, finnish_lng_size);
-			break;		
+			break;
 		case SWEDISH :
 			parseMenu((char *)swedish_lng, swedish_lng_size);
-			break;		
+			break;
 		case DANISH :
 			parseMenu((char *)danish_lng, danish_lng_size);
-			break;		
+			break;
 		case NORWEGIAN :
 			parseMenu((char *)norwegian_lng, norwegian_lng_size);
-			break;		
+			break;
 	}
 }
 
@@ -166,7 +166,7 @@ void killMenuLanguages() {
 
 void parseMenu(char *str,u32 str_len) {
 	int x,pos=0;
-	
+
 	if(strlen(str)<40) {
 		curtext[0]=str;
 		for(x=1;x<49;x++) {
@@ -191,11 +191,11 @@ void drawMenu(WPADData *wd) {
 	switch(curmenunum) {
 		case MAIN_MENU :
 			GRRLIB_DrawImg(0, 52, 608, 400, tex_menufore, 0, 1, 1, 255);
-			
+
 			// Overlay the Japanese name for Mahjongg Solitaire - Shanghi
 			if(opt_lang==JAPANESE)
 				GRRLIB_DrawImg(354, 142, 72, 40, tex_shanghi, 0, 1, 1, 255);
-			
+
 			for(x=0;x<5;x++) {
 				GRRLIB_GPrintf(320,mainhs[x][1],0xFFFFFFFF,x==0?1.15:1,1, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[x]);
 			}
@@ -222,7 +222,7 @@ void drawMenu(WPADData *wd) {
 				}
 				else {
 					GRRLIB_GPrintf(playhs[x][0]+playhs[x][2]/2,playhs[x][1]+36,0xFFFFFFFF,1,1, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[PLAY_POS+x*2+1]);
-				}			
+				}
 			}
 
 			GRRLIB_GPrintf(600, playhs[3][1],0xFFFFFFFF,1,1, ALIGN_RIGHT,CUR_FONT(msel==x),curtext[REMARK_POS]);
@@ -240,9 +240,9 @@ void drawMenu(WPADData *wd) {
 					char *ss = memchr(curtext[OPTIONS_POS+x],'\0',60);
 					int len = ss - curtext[OPTIONS_POS+x];
 					char *buffer = (char*) malloc(len+5);
-					
+
 					strcpy(buffer,curtext[OPTIONS_POS+x]);
-					
+
 					if((x==4 && opt_rumble) || (x==2 && opt_hoverhint) || (x==5 && opt_widescreen)) {
 						char *s2 = strchr(buffer,'/');
 						if(s2!=NULL)
@@ -256,7 +256,7 @@ void drawMenu(WPADData *wd) {
 					}
 
 					GRRLIB_GPrintf(320,opths[x][1],0xFFFFFFFF,1,1, ALIGN_CENTRE,CUR_FONT(msel==x),buffer);
-					
+
 					free(buffer);
 
 				}
@@ -264,7 +264,7 @@ void drawMenu(WPADData *wd) {
 					GRRLIB_GPrintf(320,opths[x][1],0xFFFFFFFF,1,1, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[OPTIONS_POS+x]);
 			}
 			GRRLIB_GPrintf(600, opths[6][1],0xFFFFFFFF,1,1, ALIGN_RIGHT,CUR_FONT(msel==x),curtext[REMARK_POS]);
-			
+
 			break;
 		case SOUND_MENU :
 			GRRLIB_DrawImg(86,30,524,436, tex_menufore, 0, 1, 1, 255);
@@ -273,7 +273,7 @@ void drawMenu(WPADData *wd) {
 				GRRLIB_GPrintf(320,soundhs[x+3][1],0xFFFFFFFF,1,1, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[SOUND_POS+x]);
 			}
 			GRRLIB_GPrintf(600, soundhs[2][1],0xFFFFFFFF,1,1, ALIGN_RIGHT,CUR_FONT(msel==x),curtext[REMARK_POS]);
-			
+
 			// draw the offs
 			GRRLIB_GPrintf(186,115,0xFFFFFFFF,1,1, ALIGN_RIGHT,CUR_FONT(false),curtext[SOUND_POS+2]);
 			GRRLIB_GPrintf(186,224,0xFFFFFFFF,1,1, ALIGN_RIGHT,CUR_FONT(false),curtext[SOUND_POS+2]);
@@ -320,14 +320,14 @@ void drawMenu(WPADData *wd) {
 					}
 					else
 						GRRLIB_DrawGTile(langhs[x][0],langhs[x][1],148,108,tex_flags,4,4,0,1,1,0xFFEEEEEE,tx);
-						
+
 					GRRLIB_DrawGTile(langhs[x][0]-8,langhs[x][1]+80,160,40,tex_languages,4,4,0,1,1,0xFFFFFFFF,tx);
 				}
 			}
 
 			oldz+=1;
 			if(oldz>=256) oldz=0;
-			
+
 			if(lang_page==0) {
 				if(btnover)
 					GRRLIB_DrawImg(580,220,40,40, tex_plus, 0, 1, 1, 255);
@@ -340,7 +340,7 @@ void drawMenu(WPADData *wd) {
 				else
 					GRRLIB_DrawImg(10,220,40,40, tex_minus, 0, 0.8, 0.8, 128);
 			}
-			
+
 			break;
 		case LAYOUT_MENU :
 			GRRLIB_GPrintf(320,27,0xFFFFFFFF,1,1, ALIGN_CENTRE,CUR_FONT(true),curtext[OPTIONS_POS+1]);
@@ -365,7 +365,7 @@ void drawMenu(WPADData *wd) {
 
 			for(x=0;x<6;x++) {
 				GRRLIB_DrawImg(layouths[x][0],layouths[x][1]-10,180,208, tex_layout, 0, 1, 0.8, 255);
-				
+
 				GRRLIB_DrawImg(layouths[x][0]+4-236,layouths[x][1]-148,640,480,tex_bk[x],0,0.24,0.3,255);
 
 				GRRLIB_DrawImg(layouths[x][0]+4,layouths[x][1]-10+3,168, 200, tex_border, 0, 1, 0.8, 255);
@@ -391,7 +391,7 @@ void drawMenu(WPADData *wd) {
 void drawLayout(int n) {
 	unsigned char grid[MAX_WIDTH][MAX_HEIGHT][MAX_LAYERS];
 	int x,y,z,c,l,pos=0;
-	
+
 	for(z=0;z<MAX_LAYERS;z++) {
 		for(x=0;x<MAX_WIDTH;x++) {
 			for(y=0;y<MAX_HEIGHT;y++) {
@@ -406,7 +406,7 @@ void drawLayout(int n) {
 		z=layouts[n][pos++];
 		grid[x][y][z]=255;
 	}
-	
+
 	for(z=0;z<MAX_LAYERS;z++) {
 		for(x=0;x<MAX_WIDTH+MAX_HEIGHT;x++) {
 			for(y=(x>=MAX_WIDTH?x-MAX_WIDTH:0),c=(x>=MAX_WIDTH?MAX_WIDTH-1:x);y<MAX_HEIGHT && c>=0;y++,c--) {
@@ -715,12 +715,12 @@ void checkSelected(WPADData *wd) {
 
 void initMainMenu() {
 	int x,strsize;
-	
+
 	tex_menuback=GRRLIB_LoadJPG(mainback_jpg, mainback_jpg_size);
 	tex_menufore=GRRLIB_LoadTexture(mainfore_png);
 
 	tex_shanghi=GRRLIB_LoadTexture(shanghi_png);
-	
+
 	for(x=0;x<5;x++) {
 		strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[x]);
 		mainhs[x][0]=320-strsize/2;
@@ -740,7 +740,7 @@ void killMainMenu() {
 
 void initPlayMenu() {
 	int x;
-	
+
 	tex_menuback=GRRLIB_LoadJPG(playback_jpg, playback_jpg_size);
 	tex_menufore=GRRLIB_LoadTexture(playfore_png);
 
@@ -749,7 +749,7 @@ void initPlayMenu() {
 	int strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS]);
 	playhs[3][0]=600-strsize;
 	playhs[3][2]=strsize;
-	
+
 	// if we only have one line then half the selectable hight
 	for(x=0;x<3;x++) {
 		if(strcmp(curtext[PLAY_POS+1+x*2]," ")==0)
@@ -812,7 +812,7 @@ void initLangMenu() {
 	tex_languages=GRRLIB_LoadTexture(languages_png);
 	tex_plus=GRRLIB_LoadTexture(HSplusButton_png);
 	tex_minus=GRRLIB_LoadTexture(HSminusButton_png);
-	
+
 	curmenunum = LANG_MENU;
 }
 
@@ -831,7 +831,7 @@ void initLayoutMenu() {
 	tex_layout=GRRLIB_LoadTexture(layoutback_png);
 	tex_smalltile=GRRLIB_LoadTexture(smalltile_png);
 	tex_shade=GRRLIB_LoadTexture(shade_png);
-	
+
 	curmenunum = LAYOUT_MENU;
 }
 
@@ -861,7 +861,7 @@ void initTilesetMenu() {
 	tex_bk[3]=GRRLIB_LoadJPG(bk_spooky_jpg, bk_spooky_jpg_size);
 	tex_bk[4]=GRRLIB_LoadJPG(bk_egypt_jpg, bk_egypt_jpg_size);
 	tex_bk[5]=GRRLIB_LoadJPG(bk_space_jpg, bk_space_jpg_size);
-	
+
 	curmenunum = TILESET_MENU;
 }
 
