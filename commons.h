@@ -1,3 +1,6 @@
+#ifndef _commons_h_
+#define _commons_h_
+
 #define MUSIC_BAR 2000
 #define SOUND_BAR 3000
 
@@ -8,13 +11,19 @@
 #define HOVER_HINT_ON 30
 #define HOVER_HINT_OFF 31
 
-#define LAYOUTS 40
+#define LAYOUTS 12
 
 #define EXIT 999
 
 #define NOTHING 0
 
+#define MAIN_POS 0
+#define PLAY_POS 5
+#define OPTIONS_POS 12
+#define SOUND_POS 18
 #define REMARK_POS 22
+#define LAYOUT_POS 36
+#define TILESET_POS 47
 
 #define ENGLISH 0
 #define FRENCH 1
@@ -43,27 +52,22 @@
 #define EGYPTIAN 4
 #define SPACE 5
 
+#include "mahjongglayouts.h"
+
+#include "gfx/ts_old_png.h"
+#include "gfx/ts_spooky_png.h"
+#include "gfx/ts_egypt_png.h"
+#include "gfx/ts_simple_png.h"
+#include "gfx/ts_default_png.h"
+#include "gfx/ts_space_png.h"
+
+#include "gfx/bk_egypt_jpg.h"
+#include "gfx/bk_spooky_jpg.h"
+#include "gfx/bk_space_jpg.h"
+#include "gfx/gameback_jpg.h"
+
+#define CONTAINS( vx, vy, x, y, width, height) ((vx) > (x) && (vx) < (x + width) && (vy) > (y) && (vy) < (y + height))
 #define CUR_FONT(a) ((opt_lang==JAPANESE?3:1) + (a?1:0))
-
-#include "default_mtl.h"
-#include "cross_mtl.h"
-#include "pyramid_mtl.h"
-#include "butterfly_mtl.h"
-#include "fortress_mtl.h"
-#include "crab_mtl.h"
-#include "spider_mtl.h"
-
-#include "ts_old_png.h"
-#include "ts_spooky_png.h"
-#include "ts_egypt_png.h"
-#include "ts_simple_png.h"
-#include "ts_default_png.h"
-#include "ts_space_png.h"
-
-#include "bk_egypt_jpg.h"
-#include "bk_spooky_jpg.h"
-#include "bk_space_jpg.h"
-#include "gameback_jpg.h"
 
 extern char *curtext[];
 extern u8 *tex_tileset;
@@ -72,3 +76,5 @@ extern u8 *layouts[];
 
 extern bool opt_rumble, opt_hoverhint, opt_widescreen, opt_voices;
 extern int opt_sound, opt_music, opt_layout, opt_lang, opt_tileset;
+
+#endif

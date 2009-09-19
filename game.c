@@ -7,6 +7,51 @@
 #include "game.h"
 #include "commons.h"
 
+#include "GRRLIB/GRRLIB.h"
+#include "asndlib.h"       // sound library
+
+#include "gfx/gamenumbers_png.h"
+
+//#include "gameback_jpg.h"
+
+#include "gfx/bk_spooky_jpg.h"
+
+//#include "tileset_png.h"
+#include "gfx/clock_png.h"
+#include "gfx/matches_png.h"
+#include "gfx/playerone_png.h"
+#include "gfx/playertwo_png.h"
+#include "gfx/pause_png.h"
+#include "gfx/paused_png.h"
+#include "gfx/pauseover_png.h"
+#include "gfx/hint_png.h"
+#include "gfx/hintover_png.h"
+#include "gfx/undo_png.h"
+#include "gfx/undoover_png.h"
+#include "gfx/finished_png.h"
+#include "gfx/nomorematches_png.h"
+#include "gfx/winnerone_png.h"
+#include "gfx/winnertwo_png.h"
+#include "gfx/draw_png.h"
+
+#include "sound/Click17a_raw.h"
+#include "sound/gromb_raw.h"
+#include "sound/ptwiiing_raw.h"
+#include "sound/gong_raw.h"
+
+#include "sound/a_yokatta_raw.h"
+#include "sound/yatta_raw.h"
+#include "sound/Haha_raw.h"
+#include "sound/Haha2_raw.h"
+#include "sound/oh_raw.h"
+#include "sound/ohhh_raw.h"
+#include "sound/mm_raw.h"
+#include "sound/mmmm_raw.h"
+#include "sound/aiee_raw.h"
+#include "sound/nani_raw.h"
+#include "sound/doshiyo_raw.h"
+#include "sound/uss_raw.h"
+
 #define BLANK 150
 #define PLACE 151
 
@@ -35,23 +80,28 @@
 #define GAME_NOMORE 5
 #define GAME_BOARDINIT 6
 
-u8 *tex_tiles, *tex_numbers, *tex_clock, *tex_matches, *tex_pause, *tex_pauseover, *tex_paused, *tex_finished, *tex_nomorematches;
-u8 *tex_gameback, *tex_hint, *tex_hintover, *tex_playerone, *tex_playertwo, *tex_winnerone, *tex_winnertwo, *tex_draw;
+static u8 *tex_tiles, *tex_numbers, *tex_clock, *tex_matches, *tex_pause, *tex_pauseover, *tex_paused, *tex_finished;
+static u8 *tex_hint, *tex_hintover, *tex_playerone, *tex_playertwo, *tex_winnerone, *tex_winnertwo, *tex_draw, *tex_nomorematches;
+static u8 *tex_undo, *tex_undoover;
+u8* tex_gameback;
 
-bool selectable[MAX_TILES];
-unsigned char grid[MAX_WIDTH][MAX_HEIGHT][MAX_LAYERS];
+static bool selectable[MAX_TILES];
 
-unsigned char bestGuess[MAX_TILES];
+// grid to know where you can place tiles
+static unsigned char grid[MAX_WIDTH][MAX_HEIGHT][MAX_LAYERS];
 
-unsigned char tiles[MAX_TILES];
+static unsigned char bestGuess[MAX_TILES];
 
-int game_state=GAME_PLAY;
-int tot=0,dif=2,score[2],shuffleretries,totals[2]={0,0};
+// array of tiles
+static unsigned char tiles[MAX_TILES];
 
-u8 *mtl=(u8 *)default_mtl;
+static int game_state=GAME_PLAY;
+static int tot=0,dif=2,score[2],shuffleretries,totals[2]={0,0};
 
-time_t startTime,endTime,pauseTime;
-unsigned char tilesLeft,tilesToPlace,bestGuessNum=MAX_TILES;
+static u8 *mtl=(u8 *)default_mtl;
+
+static time_t startTime,endTime,pauseTime;
+static unsigned char tilesLeft,tilesToPlace,bestGuessNum=MAX_TILES;
 
 typedef struct selection {
 	char type;
@@ -59,38 +109,43 @@ typedef struct selection {
 	int x,y,z;
 } selection;
 
-selection sel[6] = {{SEL_NONE,BLANK,-1,-1,-1},{SEL_NONE,BLANK,-1,-1,-1},
+static selection undoTiles[2];
+
+static selection sel[6] = {{SEL_NONE,BLANK,-1,-1,-1},{SEL_NONE,BLANK,-1,-1,-1},
 					{SEL_NONE,BLANK,-1,-1,-1},{SEL_NONE,BLANK,-1,-1,-1},
 					{SEL_NONE,BLANK,-1,-1,-1},{SEL_NONE,BLANK,-1,-1,-1}};
 
-u32 playercol[3] = {0x00001111,0x00110011,0x00000011};
+static const u32 playercol[3] = {0x00001111,0x00110011,0x00000011};
 
-unsigned char numwidths[] = {10,15,16,17,15,16,16,15,16,16,10,11,6};
+static const unsigned char numwidths[] = {10,15,16,17,15,16,16,15,16,16,10,11,6};
 
 typedef struct fadestruct {
 	u8 alpha;
 	f32 scale;
 	f32 x,y;
 	unsigned char tile;
-	boolean fading;
+	bool fading;
 } fadestruct;
 
-fadestruct fade[4] = {{0,0,0,0,0,false},{0,0,0,0,0,false},{0,0,0,0,0,false},{0,0,0,0,0,false}};
+static fadestruct fade[4] = {{0,0,0,0,0,false},{0,0,0,0,0,false},{0,0,0,0,0,false},{0,0,0,0,0,false}};
 
-bool pauseover=false,menuover=false,shuffleover=false,hintover=false,restartover=false,newgameover=false;
-int gamemode,matches;
-int imgx=0,imgacc=0;
+static bool pauseover=false,menuover=false,shuffleover=false,hintover=false;
+static bool restartover=false,newgameover=false,undoover=false, randomgameover = false;
+static int gamemode,matches;
+static int imgx=0,imgacc=0;
 
-unsigned char openTiles[36];
+static unsigned char openTiles[36];
 
-int pausepos[4] = {563,408,56,44};
-int hintpos[4] = {563,353,56,44};
-int menupos[4] = {499,398,108,56};
-int shufflepos[4] = {463,328,168,48};
-int restartpos[4] = {40,398,168,48};
-int newgamepos[4] = {40,398,168,48};
+static int pausepos[4] = {563,408,56,44};
+static int hintpos[4] = {563,353,56,44};
+static const int undopos[4] = {563,298,56,44};
+static int menupos[4] = {499,398,108,56};
+static int shufflepos[4] = {463,328,168,48};
+static int restartpos[4] = {40,398,168,48};
+static int newgamepos[4] = {40,398,168,48};
+static int randomgamepos[4] = {40, 348, 168, 48};
 
-int multi[2] = {0,0};
+static int multi[2] = {0,0};
 
 void initGame(int gm) {
 	gamemode=gm;
@@ -138,6 +193,8 @@ void initGame(int gm) {
 	tex_pause=GRRLIB_LoadTexture(pause_png);
 	tex_paused=GRRLIB_LoadTexture(paused_png);
 	tex_pauseover=GRRLIB_LoadTexture(pauseover_png);
+	tex_undo=GRRLIB_LoadTexture(undo_png);
+	tex_undoover=GRRLIB_LoadTexture(undoover_png);
 	tex_finished=GRRLIB_LoadTexture(finished_png);
 	tex_nomorematches=GRRLIB_LoadTexture(nomorematches_png);
 	tex_winnerone=GRRLIB_LoadTexture(winnerone_png);
@@ -157,32 +214,13 @@ void initGame(int gm) {
 
 	restartpos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+6]);
 	newgamepos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+7]);
+	randomgamepos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+13]);
 
 	setupGame();
 }
 
 void setLayout(int layoutNum) {
-
-	switch(layoutNum) {
-		case 0 : // defualt;
-			mtl=(u8 *)default_mtl;
-			break;
-		case 1 : // cross;
-			mtl=(u8 *)cross_mtl;
-			break;
-		case 2 : // butterfly;
-			mtl=(u8 *)butterfly_mtl;
-			break;
-		case 3 : // fortress;
-			mtl=(u8 *)fortress_mtl;
-			break;
-		case 4 : // crab;
-			mtl=(u8 *)crab_mtl;
-			break;
-		case 5 : // spider;
-			mtl=(u8 *)spider_mtl;
-			break;
-	}
+	mtl = (u8 *)layouts[layoutNum];
 }
 
 void initGrid() {
@@ -195,7 +233,7 @@ void initGrid() {
 				grid[x][y][z]=BLANK;
 
 	// put placeholders on the grid for the tiles
-	for(l=0;l<MAX_TILES;l++) {
+	for(l=0;l<MAX_TILES;++l) {
 		x=mtl[pos++];
 		y=mtl[pos++];
 		z=mtl[pos++];
@@ -219,11 +257,11 @@ void resetToPlaces() {
 
 void checkSelectable() {
 	int x,y,z;
-	for(x=0;x<MAX_TILES;x++) selectable[x]=false;
+	for(x=0;x<MAX_TILES;++x) selectable[x]=false;
 
-	for(z=MAX_LAYERS-1;z>=0;z--) {
-		for(y=0;y<MAX_HEIGHT;y++) {
-			for(x=0;x<MAX_WIDTH;x++) {
+	for(z=MAX_LAYERS-1;z>=0;--z) {
+		for(y=0;y<MAX_HEIGHT;++y) {
+			for(x=0;x<MAX_WIDTH;++x) {
 				if(grid[x][y][z]!=BLANK) {
 					selectable[grid[x][y][z]]=isSelectable(x,y,z);
 				}
@@ -273,7 +311,7 @@ bool isSelectable(int x, int y, int z) {
 	return false;
 }
 
-boolean isHigher(char x,char y,char z) {
+bool isHigher(char x,char y,char z) {
 	int r,c,tot=0;
 	int x1=x-1,x2=x+2,y1=y-1,y2=y+2;
 	if(x1<0) x1=0;
@@ -299,6 +337,8 @@ void killGame() {
 	if(tex_pause) free(tex_pause);
 	if(tex_hintover) free(tex_hintover);
 	if(tex_hint) free(tex_hint);
+	if(tex_undoover) free(tex_undoover);
+	if(tex_undo) free(tex_undo);
 	if(tex_playertwo) free(tex_playertwo);
 	if(tex_playerone) free(tex_playerone);
 	if(tex_matches) free(tex_matches);
@@ -328,6 +368,8 @@ void setupGame() {
 
 	score[0]=0;
 	score[1]=0;
+
+	undoTiles[0].x = -1; // disable undo from start
 
 	for(x=0;x<4;x++) {
 		clearSelected(x);
@@ -362,8 +404,8 @@ void setupGame() {
 
 	game_state=GAME_PLAY;
 
-	SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&gong_raw, gong_raw_size, opt_sound, 0, NULL);
-	SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 40,&gong_raw, gong_raw_size, 0, opt_sound, NULL);
+	SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 11025, 0,&gong_raw, gong_raw_size, opt_sound, 0, NULL);
+	SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 11025, 40,&gong_raw, gong_raw_size, 0, opt_sound, NULL);
 }
 
 void mixPairs(int shuffles) {
@@ -404,6 +446,7 @@ void drawGame(){
 	else {
 		drawTime();
 		drawMatches();
+		drawTilesLeft();
 	}
 
 	for(x=0;x<4;x++) {
@@ -424,6 +467,7 @@ void drawGame(){
 			drawPauseIcon();
 			if(gamemode!=TWO_PLAYER_VERSUS) {
 				drawHintIcon();
+				drawUndoIcon();
 			}
 
 			break;
@@ -509,6 +553,7 @@ void drawGame(){
 			}
 
 			GRRLIB_GPrintf(newgamepos[0], newgamepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(newgameover),curtext[REMARK_POS+7]);
+			GRRLIB_GPrintf(randomgamepos[0], randomgamepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(randomgameover),curtext[REMARK_POS+13]);
 
 			GRRLIB_GPrintf(menupos[0], menupos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(menuover),curtext[REMARK_POS+1]);
 			break;
@@ -541,7 +586,7 @@ void drawGame(){
 void placeTilePair() {
 	int tile1 = getTile();
 	int retries=0;
-	while(!checkTile(tile1) && retries++<tilesLeft*8) {
+	while(!checkTile(tile1) && retries++ < tilesLeft*8) {
 		tile1 = getTile();
 	}
 	if(retries>=tilesLeft*8) {
@@ -573,7 +618,7 @@ void placeTilePair() {
 	// find spare tile 2
 	int tile2 = getTile();
 	retries=0;
-	while((!checkTile(tile2) || tile1==tile2 || !checkWithoutTile1(tile1,tile2)) && retries++<tilesLeft*8) {
+	while((!checkTile(tile2) || tile1==tile2 || !checkWithoutTile1(tile1,tile2)) && retries++ < tilesLeft*8) {
 		tile2 = getTile();
 	}
 	if(retries>=tilesLeft*8) {
@@ -807,7 +852,7 @@ bool checkTile(int tile) {
 }
 
 // This checks out whether there the tile has a sound fondation from th elayer below
-boolean isCovered(int x,int y,int z) {
+bool isCovered(int x,int y,int z) {
 	// check directly below
 	if(grid[x][y][z-1]<BLANK) return true;
 
@@ -900,6 +945,10 @@ void drawMatches() {
 	GRRLIB_GPrintf(593,146,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%02d",matches);
 }
 
+void drawTilesLeft() {
+    GRRLIB_GPrintf( 593, 176, 0xFFFFFFFF, 1, 1, ALIGN_CENTRE, 0, "%03d", tilesLeft);
+}
+
 void drawScores() {
 	GRRLIB_DrawImg(563, 30, 60, 44, tex_playerone, 0, 1, 1, 255);
 	GRRLIB_GPrintf(594,74,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%05d",score[0]);
@@ -916,6 +965,10 @@ void drawHintIcon() {
 	GRRLIB_DrawImg(hintpos[0], hintpos[1],hintpos[2],hintpos[3],hintover?tex_hintover:tex_hint, 0, 1, 1, 255);
 }
 
+void drawUndoIcon() {
+	GRRLIB_DrawImg(undopos[0], undopos[1],undopos[2],undopos[3],undoover?tex_undoover:tex_undo, 0, 1, 1, 255);
+}
+
 void drawRichTile(f32 xpos, f32 ypos, unsigned char tile,f32 scale,u8 alpha) {
 	GRRLIB_DrawGTile(xpos,ypos,44,60,tex_tiles,21,2,0,scale,scale,0x00FFFFFF+ 0x01000000*alpha,tile);
 }
@@ -930,10 +983,18 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 		else
 			menuover=false;
 
-		if(game_state==GAME_FINISHED && (wd_one->ir.x)>newgamepos[0] && (wd_one->ir.x)<(newgamepos[0]+newgamepos[2]) && (wd_one->ir.y)>newgamepos[1] && (wd_one->ir.y)<(newgamepos[1]+newgamepos[3]))
-			newgameover=true;
-		else
-			newgameover=false;
+		if(game_state==GAME_FINISHED )
+		{
+            if( CONTAINS( wd_one->ir.x, wd_one->ir.y, newgamepos[0], newgamepos[1],newgamepos[2],newgamepos[3]) )
+                newgameover=true;
+            else
+                newgameover=false;
+
+            if( CONTAINS( wd_one->ir.x, wd_one->ir.y, randomgamepos[0], randomgamepos[1], randomgamepos[2], randomgamepos[3]) )
+                randomgameover=true;
+            else
+                randomgameover=false;
+		}
 
 		if(game_state==GAME_NOMORE && (wd_one->ir.x)>restartpos[0] && (wd_one->ir.x)<(restartpos[0]+restartpos[2]) && (wd_one->ir.y)>restartpos[1] && (wd_one->ir.y)<(restartpos[1]+restartpos[3]))
 			restartover=true;
@@ -962,10 +1023,16 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 				return true;
 			}
 
-			if(restartover || newgameover) {
+			if(restartover || newgameover || randomgameover) {
+			    if( randomgameover)
+                {
+                    opt_layout = rand()%LAYOUTS;
+                    setLayout(opt_layout);
+                }
 				setupGame();
 				restartover=false;
 				newgameover=false;
+				randomgameover=false;
 			}
 		}
 
@@ -989,6 +1056,11 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 			hintover=true;
 		else
 			hintover=false;
+        //undo
+		if((wd_one->ir.x)>undopos[0] && (wd_one->ir.x)<(undopos[0]+undopos[2]) && (wd_one->ir.y)>undopos[1] && (wd_one->ir.y)<(undopos[1]+undopos[3]))
+			undoover=true;
+		else
+			undoover=false;
 	}
 
 	if(game_state==GAME_PAUSED && (wd_one->ir.x)>restartpos[0] && (wd_one->ir.x)<(restartpos[0]+restartpos[2]) && (wd_one->ir.y)>restartpos[1] && (wd_one->ir.y)<(restartpos[1]+restartpos[3]))
@@ -1037,6 +1109,12 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 		if(hintover) {
 			findHint();
 			return false;
+		}
+
+		if(undoover)
+		{
+		    undo();
+		    return false;
 		}
 
 
@@ -1090,7 +1168,7 @@ void selectProcessing(WPADData *wd, int player) {
 	if(gamemode==TWO_PLAYER_COOP && sel[other].type!=SEL_NONE) {
 		if(isSameTile(selnum,other)) {
 			clearSelected(selnum);
-			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
 			return;
 		}
 		if(checkMatch(selnum,other)) {
@@ -1106,12 +1184,12 @@ void selectProcessing(WPADData *wd, int player) {
 		if(gamemode==TWO_PLAYER_VERSUS && sel[other].type!=SEL_NONE && isSameTile(selnum,other)) {
 			clearSelected(other);
 			if(player==0) {
-				SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 14000, 0,&Haha_raw, Haha_raw_size, opt_sound, opt_sound, NULL);
-				SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 16000, 600,&nani_raw, nani_raw_size, opt_sound, opt_sound, NULL);
+				SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&Haha_raw, Haha_raw_size, opt_sound, opt_sound, NULL);
+				SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 600,&nani_raw, nani_raw_size, opt_sound, opt_sound, NULL);
 			}
 			else {
-				SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 16000, 0,&Haha2_raw, Haha2_raw_size, opt_sound, opt_sound, NULL);
-				SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 14000, 600,&doshiyo_raw, doshiyo_raw_size, opt_sound, opt_sound, NULL);
+				SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&Haha2_raw, Haha2_raw_size, opt_sound, opt_sound, NULL);
+				SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 600,&doshiyo_raw, doshiyo_raw_size, opt_sound, opt_sound, NULL);
 			}
 		}
 		else
@@ -1125,7 +1203,7 @@ void selectProcessing(WPADData *wd, int player) {
 	if(isSameTile(selnum, selnum-1)) {
 		clearSelected(selnum);
 		clearSelected(selnum-1);
-		SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+		SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
 		return;
 	}
 
@@ -1143,7 +1221,7 @@ void selectProcessing(WPADData *wd, int player) {
 		clearSelected(selnum);
 
 		// no match so play the unmatched pair sound
-		SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+		SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
 	}
 }
 
@@ -1154,6 +1232,7 @@ void removeMatched(int player,int s1, int s2) {
 		multi[(player+1)%2]=0;
 		score[player]+=calcScore(player);
 	}
+	storeUndo( s1, s2);
 	removeTile(s1);
 	removeTile(s2);
 	checkSelectable();
@@ -1197,50 +1276,50 @@ void removeMatched(int player,int s1, int s2) {
 			case 0 :
 				switch(multi[player]) {
 					case 1 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 15000, 0,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					case 2 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 15000, 0,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					case 3 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 15000, 0,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 15000, 300,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 300,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					case 4 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 15000, 0,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 15000, 400,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 400,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					case 5 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&aiee_raw, aiee_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&aiee_raw, aiee_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					default :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 15000, 320,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&aiee_raw, aiee_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 320,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&aiee_raw, aiee_raw_size, opt_sound, opt_sound, NULL);
 						break;
 				}
 				break;
 			case 1 :
 				switch(multi[player]) {
 					case 1 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 16000, 0,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					case 2 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 16000, 0,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					case 3 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 16000, 0,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 16000, 260,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 260,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					case 4 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 16000, 0,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 16000, 300,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 300,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					case 5 :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 11000, 0,&uss_raw, uss_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&uss_raw, uss_raw_size, opt_sound, opt_sound, NULL);
 						break;
 					default :
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 18000, 280,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 11000, 0,&uss_raw, uss_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 280,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&uss_raw, uss_raw_size, opt_sound, opt_sound, NULL);
 						break;
 				}
 				break;
@@ -1248,7 +1327,7 @@ void removeMatched(int player,int s1, int s2) {
 	}
 	else {
 		for(x=0;x<multi[player]+1 && x<5;x++) {
-			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, x*40,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
+			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 22050, x*40,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
 //			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 20+x*80,&ptwiiing_raw, ptwiiing_raw_size, 0, opt_sound, NULL);
 		}
 	}
@@ -1264,18 +1343,18 @@ void finishGame() {
 	if(gamemode==TWO_PLAYER_VERSUS) {
 		if(score[0]>score[1]) {
 			totals[0]++;
-			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 11000, 0,&a_yokatta_raw, a_yokatta_raw_size, opt_sound, opt_sound, NULL);
+			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&a_yokatta_raw, a_yokatta_raw_size, opt_sound, opt_sound, NULL);
 		}
 		else
 		if(score[1]>score[0]) {
 			totals[1]++;
-			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 11000, 0,&yatta_raw, yatta_raw_size, opt_sound, opt_sound, NULL);
+			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&yatta_raw, yatta_raw_size, opt_sound, opt_sound, NULL);
 		}
 	}
 	else {
 		int x;
 		for(x=0;x<8;x++) {
-			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, x*148,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
+			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 22050, x*148,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
 		}
 
 	}
@@ -1319,6 +1398,37 @@ bool selectExactTile(int x, int y, int z, int selnum) {
 		return true;
 	}
 	return false;
+}
+
+void storeUndo( int sel1, int sel2)
+{
+    undoTiles[0].x = sel[sel1].x;
+    undoTiles[0].y = sel[sel1].y;
+    undoTiles[0].z = sel[sel1].z;
+    undoTiles[0].tile = grid[sel[sel1].x][sel[sel1].y][sel[sel1].z];
+    undoTiles[0].type = tiles[undoTiles[0].tile];
+    undoTiles[1].x = sel[sel2].x;
+    undoTiles[1].y = sel[sel2].y;
+    undoTiles[1].z = sel[sel2].z;
+    undoTiles[1].tile = grid[sel[sel2].x][sel[sel2].y][sel[sel2].z];
+    undoTiles[1].type = tiles[undoTiles[1].tile];
+}
+
+void undo()
+{
+    if( undoTiles[0].x > 0)
+    {
+        grid[undoTiles[0].x][undoTiles[0].y][undoTiles[0].z] = undoTiles[0].tile;
+        tiles[undoTiles[0].tile] = undoTiles[0].type;
+
+        grid[undoTiles[1].x][undoTiles[1].y][undoTiles[1].z] = undoTiles[1].tile;
+        tiles[undoTiles[1].tile] = undoTiles[1].type;
+
+        checkSelectable();
+        goesLeft();
+        tilesLeft += 2;
+    }
+    undoTiles[0].x = -1; //disable until next remove of a tile
 }
 
 void removeTile(int selnum) {
@@ -1383,7 +1493,7 @@ void findHint() {
 	int tn,x,y,z;
 
 	if(!goesLeft()) {
-		SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+		SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
 		return;
 	}
 
@@ -1407,7 +1517,7 @@ void findHint() {
 					if(s==6) {
 						// play sound and add 30 seconds to the time
 						startTime-=30;
-						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&ptwiiing_raw, ptwiiing_raw_size, opt_sound, opt_sound, NULL);
+						SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 44100, 0,&ptwiiing_raw, ptwiiing_raw_size, opt_sound, opt_sound, NULL);
 						return;
 					}
 				}

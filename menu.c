@@ -3,8 +3,76 @@
 		Code     : Justin Wood
 		Menu class
  ============================================*/
-#include "menu.h"
+#include <stdio.h>
+#include <string.h>
+
+#include "GRRLIB/GRRLIB.h"
+#include "lib/libpng/pngu/pngu.h"
+#include "asndlib.h"       // sound library
+
 #include "commons.h"
+#include "menu.h"
+
+#include "gfx/letterswhite_png.h"
+#include "gfx/letters_png.h"
+
+#include "gfx/japanwhite_png.h"
+#include "gfx/japan_png.h"
+
+//#include "latin_map.h"
+//#include "japanese_map.h"
+
+#include "languages.h"
+//#include "english_lng.h"
+//#include "french_lng.h"
+//#include "italian_lng.h"
+//#include "dutch_lng.h"
+//#include "german_lng.h"
+//#include "spanish_lng.h"
+//#include "catalan_lng.h"
+//#include "japanese_lng.h"
+//#include "portuguese_lng.h"
+//#include "hungarian_lng.h"
+//#include "finnish_lng.h"
+//#include "swedish_lng.h"
+//#include "danish_lng.h"
+//#include "norwegian_lng.h"
+
+// main menu graphics
+#include "gfx/mainback_jpg.h"
+#include "gfx/mainfore_png.h"
+#include "gfx/shanghi_png.h"
+
+// play menu graphics
+#include "gfx/playback_jpg.h"
+#include "gfx/shade_png.h"
+#include "gfx/playfore_png.h"
+
+// options menu graphics
+#include "gfx/optionsback_jpg.h"
+#include "gfx/optionsfore_png.h"
+
+// sound menu graphics
+#include "gfx/soundback_jpg.h"
+#include "gfx/unselectedball_png.h"
+#include "gfx/selectedball_png.h"
+#include "gfx/soundfore_png.h"
+
+// language menu graphics
+#include "gfx/flags_png.h"
+#include "gfx/languages_png.h"
+#include "gfx/HSminusButton_png.h"
+#include "gfx/HSplusButton_png.h"
+
+// layout menu graphics
+#include "gfx/layoutback_png.h"
+#include "gfx/smalltile_png.h"
+
+// tileset menu graphics
+#include "gfx/border_png.h"
+
+#include "sound/Click17a_raw.h"
+#include "sound/gromb_raw.h"
 
 #define MAIN_MENU 0
 #define PLAY_MENU 1
@@ -14,36 +82,32 @@
 #define LAYOUT_MENU 5
 #define TILESET_MENU 6
 
-#define MAIN_POS 0
-#define PLAY_POS 5
-#define OPTIONS_POS 12
-#define SOUND_POS 18
-#define REMARK_POS 22
-#define LAYOUT_POS 35
-#define TILESET_POS 41
+static int mainhs[5][4] = {{201,199,240,56},{226,250,192,44},{192,299,256,48},{181,348,280,44},{277,395,88,48}};
 
-int mainhs[5][4] = {{201,199,240,56},{226,250,192,44},{192,299,256,48},{181,348,280,44},{277,395,88,48}};
+static int playhs[4][4] = {{43,290,168,84},{230,291,176,76},{419,289,176,84},{495,395,100,44}};
 
-int playhs[4][4] = {{43,290,168,84},{230,291,176,76},{419,289,176,84},{495,395,100,44}};
+static int soundhs[5][4] = {{195,111,252,52},{195,220,252,52},{495,395,100,44},{263,60,116,48},{261,171,120,44}};
 
-int soundhs[5][4] = {{195,111,252,52},{195,220,252,52},{495,395,100,44},{263,60,116,48},{261,171,120,44}};
+static int opths[7][4] = {{176,30,292,48},{180,90,280,48},{164,270,212,48},{164,150,212,48},{164,210,212,48},{164,330,212,48},{495,395,100,44}};
 
-int opths[7][4] = {{176,30,292,48},{180,90,280,48},{164,270,212,48},{164,150,212,48},{164,210,212,48},{164,330,212,48},{495,395,100,44}};
+static int langhs[9][2] = {{65,40},{240,40},{415,40},{65,180},{240,180},{415,180},{65,320},{240,320},{415,320}};
 
-int langhs[9][2] = {{65,40},{240,40},{415,40},{65,180},{240,180},{415,180},{65,320},{240,320},{415,320}};
+static int layouths[6][2] = {{20,72},{225,72},{440,72},{20,263},{225,263},{440,263}};
 
-int layouths[6][2] = {{20,72},{225,72},{440,72},{20,263},{225,263},{440,263}};
+static int tileseths[6][2] = {{20,72},{225,72},{440,72},{20,263},{225,263},{440,263}};
 
-int tileseths[6][2] = {{20,72},{225,72},{440,72},{20,263},{225,263},{440,263}};
+char *curtext[50] = { 0 };
+static char lngstr[2000];
 
-char *curtext[50];
+static const char latin_map[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890.'.ÄÜÉÓ...ÚÁÂÖÍ.";
+static const char japanese_map[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 ' ÄÜÉÓ   ÚÁÂÖÍ ";
 
-unsigned char latinwidths[] = {25,26,26,27,24,26,27,26,20,24,27,22,27,
+static const unsigned char latinwidths[] = {25,26,26,27,24,26,27,26,20,24,27,22,27,
 								24,26,26,27,27,25,25,27,27,36,29,26,24,
 								16,24,24,27,25,26,24,24,26,26,28,12,25,
 								25,26,24,26,25,26,27,27,25,25,26,20,25};
 
-unsigned char japanwidths[] = {19,38,33,37,35,35,41,41,36,36,40,39,40,
+static const unsigned char japanwidths[] = {19,38,33,37,35,35,41,41,36,36,40,39,40,
 								29,33,35,39,38,33,37,41,41,37,31,40,35,
 								30,38,31,31,40,33,39,38,36,39,39,39,41,
 								41,40,41,39,39,41,41,39,40,39,41,39,40,
@@ -52,18 +116,18 @@ unsigned char japanwidths[] = {19,38,33,37,35,35,41,41,36,36,40,39,40,
 								42,34,16,24,26,42,41,42,41,41,40,39,39,
 								38,40,35,32,29,38,38,42,40,40,38,40};
 
-int curmenunum,msel=-1;
+static int curmenunum,msel=-1;
 
-u8 *tex_menufore,*tex_menuback, *tex_letters, *tex_whiteletters, *tex_japletters, *tex_japwhiteletters, *tex_flags, *tex_languages;
-u8 *tex_shade,*tex_sball, *tex_uball, *tex_smalltile, *tex_plus, *tex_minus, *tex_tiles[6], *tex_bk[6], *tex_border, *tex_layout, *tex_shanghi;
-int xsound,xmusic;
+static u8 *tex_menufore,*tex_menuback, *tex_letters, *tex_whiteletters, *tex_japletters, *tex_japwhiteletters, *tex_flags, *tex_languages;
+static u8 *tex_shade,*tex_sball, *tex_uball, *tex_smalltile, *tex_plus, *tex_minus, *tex_tiles[6], *tex_bk[6], *tex_border, *tex_layout, *tex_shanghi;
+static int xsound,xmusic;
 
-bool btnover=false;
-int lang_page=0;
+static bool btnover=false;
+static int curpage=0;
 
 static int SinSize=83;
 
-int SinTab[]=
+static const int SinTab[]=
 {-20 ,-20 ,-20 ,-19 ,-19 ,-18 ,-17 ,-17 ,
 -16 ,-15 ,-14 ,-13 ,-12 ,-10 ,-9 ,-8 ,
 -6 ,-5 ,-3 ,-2 , 0 , 1 , 2 , 4 ,
@@ -76,7 +140,7 @@ int SinTab[]=
 -12 ,-13 ,-14 ,-15 ,-16 ,-17 ,-18 ,-18 ,
 -19 ,-19 ,-20 ,-20 -20 };
 
-int oldz=0;
+static int oldz=0;
 
 void initMenu() {
 	xmusic=soundhs[0][0]+((double)opt_music/64*(soundhs[0][2]-44));
@@ -85,13 +149,17 @@ void initMenu() {
 	if(opt_lang==-1)
 		initLangMenu();
 	else {
-		setLanguage();
+	    if( curtext[0] == 0) {
+            setLanguage();
+	    }
 		initMainMenu();
 	}
 }
 
 void setLanguage() {
 	if(!tex_letters) {
+		tex_japletters=0;
+		tex_japwhiteletters=0;
 		tex_japletters=GRRLIB_LoadTexture(japan_png);
 		tex_japwhiteletters=GRRLIB_LoadTexture(japanwhite_png);
 
@@ -107,46 +175,49 @@ void setLanguage() {
 
 	switch(opt_lang) {
 		case ENGLISH :
-			parseMenu((char *)english_lng, english_lng_size);
+			parseMenu((char *)english_lng);
 			break;
-		case FRENCH :
-			parseMenu((char *)french_lng, french_lng_size);
-			break;
-		case ITALIAN :
-			parseMenu((char *)italian_lng, italian_lng_size);
-			break;
-		case DUTCH :
-			parseMenu((char *)dutch_lng, dutch_lng_size);
-			break;
+//		case FRENCH :
+//			parseMenu((char *)french_lng, french_lng_size);
+//			break;
+//		case ITALIAN :
+//			parseMenu((char *)italian_lng, italian_lng_size);
+//			break;
+//		case DUTCH :
+//			parseMenu((char *)dutch_lng, dutch_lng_size);
+//			break;
 		case GERMAN :
-			parseMenu((char *)german_lng, german_lng_size);
+			parseMenu((char *)german_lng);
 			break;
-		case SPANISH :
-			parseMenu((char *)spanish_lng, spanish_lng_size);
-			break;
-		case CATALAN :
-			parseMenu((char *)catalan_lng, catalan_lng_size);
-			break;
-		case JAPANESE :
-			parseMenu((char *)japanese_lng, japanese_lng_size);
-			break;
-		case PORTUGUESE :
-			parseMenu((char *)portuguese_lng, portuguese_lng_size);
-			break;
-		case HUNGARIAN :
-			parseMenu((char *)hungarian_lng, hungarian_lng_size);
-			break;
-		case FINNISH :
-			parseMenu((char *)finnish_lng, finnish_lng_size);
-			break;
-		case SWEDISH :
-			parseMenu((char *)swedish_lng, swedish_lng_size);
-			break;
-		case DANISH :
-			parseMenu((char *)danish_lng, danish_lng_size);
-			break;
-		case NORWEGIAN :
-			parseMenu((char *)norwegian_lng, norwegian_lng_size);
+//		case SPANISH :
+//			parseMenu((char *)spanish_lng, spanish_lng_size);
+//			break;
+//		case CATALAN :
+//			parseMenu((char *)catalan_lng, catalan_lng_size);
+//			break;
+//		case JAPANESE :
+//			parseMenu((char *)japanese_lng, japanese_lng_size);
+//			break;
+//		case PORTUGUESE :
+//			parseMenu((char *)portuguese_lng, portuguese_lng_size);
+//			break;
+//		case HUNGARIAN :
+//			parseMenu((char *)hungarian_lng, hungarian_lng_size);
+//			break;
+//		case FINNISH :
+//			parseMenu((char *)finnish_lng, finnish_lng_size);
+//			break;
+//		case SWEDISH :
+//			parseMenu((char *)swedish_lng, swedish_lng_size);
+//			break;
+//		case DANISH :
+//			parseMenu((char *)danish_lng, danish_lng_size);
+//			break;
+//		case NORWEGIAN :
+//			parseMenu((char *)norwegian_lng, norwegian_lng_size);
+//			break;
+        default:
+			parseMenu((char *)english_lng);
 			break;
 	}
 }
@@ -164,23 +235,15 @@ void killMenuLanguages() {
 }
 
 
-void parseMenu(char *str,u32 str_len) {
-	int x,pos=0;
+void parseMenu(char *str) {
+	int x = 0;
 
-	if(strlen(str)<40) {
-		curtext[0]=str;
-		for(x=1;x<49;x++) {
-			curtext[x]=memchr(&str[pos], '\0',str_len) + 1;
-			if(curtext[x-1]!=NULL)
-				pos+=strlen(curtext[x-1]) + 1;
-		}
-	}
-	else {
-		curtext[0]=strtok(str,",\n\0");
+	strcpy( lngstr, str);
 
-		for(x=1;x<49;x++) {
-			curtext[x]=strtok(NULL,",\n\0");
-		}
+    curtext[x++] = strtok(lngstr,",\n");
+
+    while( curtext[x - 1] != NULL) {
+        curtext[x++] = strtok(NULL,",\n");
 	}
 }
 
@@ -304,7 +367,7 @@ void drawMenu(WPADData *wd) {
 		case LANG_MENU :
 			for(x=0;x<9;x++) {
 				// set
-				int tx = x + (lang_page==0?0:9);
+				int tx = x + (curpage==0?0:9);
 				// only show if overall less then number of languages supported
 				if(tx<=13) {
 					if(x==msel) {
@@ -328,7 +391,7 @@ void drawMenu(WPADData *wd) {
 			oldz+=1;
 			if(oldz>=256) oldz=0;
 
-			if(lang_page==0) {
+			if(curpage==0) {
 				if(btnover)
 					GRRLIB_DrawImg(580,220,40,40, tex_plus, 0, 1, 1, 255);
 				else
@@ -347,18 +410,32 @@ void drawMenu(WPADData *wd) {
 
 			for(x=0;x<6;x++) {
 				GRRLIB_DrawImg(layouths[x][0],layouths[x][1]-10,180,208, tex_layout, 0, 1, 0.8, 255);
-				drawLayout(x);
+				int tx = x + (curpage==0?0:6);
+				drawLayout(tx);
 			}
 
 			for(x=0;x<6;x++) {
+				int tx = x + (curpage==0?0:6);
 				if(!(x==msel))
 					GRRLIB_DrawImg(layouths[x][0]+4, layouths[x][1]-8, 168, 196,tex_shade, 0, 1, 0.8, 255);
 					if(opt_lang==JAPANESE)
-						GRRLIB_GPrintf(layouths[x][0]+92,layouths[x][1]+152,0xFFFFFFFF,1,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LAYOUT_POS+x]);
+						GRRLIB_GPrintf(layouths[x][0]+92,layouths[x][1]+152,0xFFFFFFFF,1,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LAYOUT_POS+tx]);
 					else
-						GRRLIB_GPrintf(layouths[x][0]+77,layouths[x][1]+152,0xFFFFFFFF,0.55,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LAYOUT_POS+x]);
+						GRRLIB_GPrintf(layouths[x][0]+77,layouths[x][1]+152,0xFFFFFFFF,0.55,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LAYOUT_POS+tx]);
 			}
 
+			if(curpage==0) {
+				if(btnover)
+					GRRLIB_DrawImg(600,240,40,40, tex_plus, 0, 1, 1, 255);
+				else
+					GRRLIB_DrawImg(600,240,40,40, tex_plus, 0, 0.8, 0.8, 127);
+			}
+			else {
+				if(btnover)
+					GRRLIB_DrawImg(0,240,40,40, tex_minus, 0, 1, 1, 255);
+				else
+					GRRLIB_DrawImg(0,240,40,40, tex_minus, 0, 0.8, 0.8, 128);
+			}
 			break;
 		case TILESET_MENU :
 			GRRLIB_GPrintf(320,27,0xFFFFFFFF,1,1, ALIGN_CENTRE,CUR_FONT(true),curtext[OPTIONS_POS]);
@@ -391,6 +468,7 @@ void drawMenu(WPADData *wd) {
 void drawLayout(int n) {
 	unsigned char grid[MAX_WIDTH][MAX_HEIGHT][MAX_LAYERS];
 	int x,y,z,c,l,pos=0;
+	int coord = n % 6;
 
 	for(z=0;z<MAX_LAYERS;z++) {
 		for(x=0;x<MAX_WIDTH;x++) {
@@ -411,7 +489,7 @@ void drawLayout(int n) {
 		for(x=0;x<MAX_WIDTH+MAX_HEIGHT;x++) {
 			for(y=(x>=MAX_WIDTH?x-MAX_WIDTH:0),c=(x>=MAX_WIDTH?MAX_WIDTH-1:x);y<MAX_HEIGHT && c>=0;y++,c--) {
 				if(grid[c][y][z]==255) {
-					GRRLIB_DrawImg(layouths[n][0]+14+c*5-z,layouths[n][1]+34+y*7-z,12,16,tex_smalltile,0,1,1,255);
+					GRRLIB_DrawImg(layouths[coord][0]+14+c*5-z,layouths[coord][1]+34+y*7-z,12,16,tex_smalltile,0,1,1,255);
 				}
 			}
 		}
@@ -537,7 +615,7 @@ int menuWiimote(WPADData *wd, u32 wpaddown) {
 				break;
 			case LANG_MENU :
 				if(msel>-1) {
-					int tmp_lang=msel + (lang_page==0?0:9);
+					int tmp_lang=msel + (curpage==0?0:9);
 					if(tmp_lang>NORWEGIAN) return NOTHING;
 					opt_lang=tmp_lang;
 					setLanguage();
@@ -546,16 +624,23 @@ int menuWiimote(WPADData *wd, u32 wpaddown) {
 					initOptionMenu();
 				}
 				if(btnover) {
-					lang_page=++lang_page%2;
+				    curpage++;
+					curpage = curpage % 2;
 					playClick();
 				}
 				break;
 			case LAYOUT_MENU :
 				if(msel>-1) {
 					playClick();
-					opt_layout=msel;
+					int tmp_sel = msel + (curpage==0?0:6);
+					opt_layout=tmp_sel;
 					killLayoutMenu();
 					initOptionMenu();
+				}
+				if(btnover) {
+				    curpage++;
+					curpage = curpage % 2;
+					playClick();
 				}
 				break;
 			case TILESET_MENU :
@@ -623,11 +708,11 @@ int menuWiimote(WPADData *wd, u32 wpaddown) {
 	}
 
 	if(wpaddown & WPAD_BUTTON_PLUS) {
-		if(curmenunum==LANG_MENU && lang_page==0) lang_page++;
+		if((curmenunum==LANG_MENU || curmenunum==LAYOUT_MENU) && curpage==0) curpage++;
 	}
 
 	if(wpaddown & WPAD_BUTTON_MINUS) {
-		if(curmenunum==LANG_MENU && lang_page==1) lang_page--;
+		if((curmenunum==LANG_MENU || curmenunum==LAYOUT_MENU) && curpage==1) curpage--;
 	}
 
 	return NOTHING;
@@ -638,7 +723,7 @@ void checkSelected(WPADData *wd) {
 	switch(curmenunum) {
 		case MAIN_MENU :
 			for(x=0;x<5;x++) {
-				if((wd->ir.x)>mainhs[x][0] && (wd->ir.x)<(mainhs[x][0]+mainhs[x][2]) && (wd->ir.y)>mainhs[x][1] && (wd->ir.y)<(mainhs[x][1]+mainhs[x][3])) {
+				if( CONTAINS( wd->ir.x, wd->ir.y, mainhs[x][0], mainhs[x][1], mainhs[x][2], mainhs[x][3]) ) {
 					msel=x;
 					return;
 				}
@@ -646,12 +731,12 @@ void checkSelected(WPADData *wd) {
 			break;
 		case PLAY_MENU :
 			for(x=0;x<4;x++) {
-				if((wd->ir.x)>playhs[x][0] && (wd->ir.x)<(playhs[x][0]+playhs[x][2]) && (wd->ir.y)>playhs[x][1] && (wd->ir.y)<(playhs[x][1]+playhs[x][3])) {
+				if( CONTAINS( wd->ir.x, wd->ir.y, playhs[x][0], playhs[x][1], playhs[x][2], playhs[x][3]) ) {
 					msel=x;
 					return;
 				}
 
-				if(x<3 && (wd->ir.x)>playhs[x][0] && (wd->ir.x)<(playhs[x][0]+168) && (wd->ir.y)>90 && (wd->ir.y)<(286)) {
+				if(x<3 && CONTAINS( wd->ir.x, wd->ir.y, playhs[x][0], 90, 168, 286) ) {
 					msel=x;
 					return;
 				}
@@ -680,7 +765,7 @@ void checkSelected(WPADData *wd) {
 					return;
 				}
 			}
-			if(lang_page==0) {
+			if(curpage==0) {
 				if((wd->ir.x)>580 && (wd->ir.x)<620 && (wd->ir.y)>220 && (wd->ir.y)<260)
 					btnover=true;
 				else
@@ -700,6 +785,19 @@ void checkSelected(WPADData *wd) {
 					return;
 				}
 			}
+			if(curpage==0) {
+				if((wd->ir.x)>600 && (wd->ir.x)<640 && (wd->ir.y)>240 && (wd->ir.y)<280)
+					btnover=true;
+				else
+					btnover=false;
+			}
+			else {
+				if((wd->ir.x)>0 && (wd->ir.x)<40 && (wd->ir.y)>240 && (wd->ir.y)<280)
+					btnover=true;
+				else
+					btnover=false;
+			}
+			break;
 			break;
 		case TILESET_MENU :
 			for(x=0;x<6;x++) {
@@ -719,10 +817,11 @@ void initMainMenu() {
 	tex_menuback=GRRLIB_LoadJPG(mainback_jpg, mainback_jpg_size);
 	tex_menufore=GRRLIB_LoadTexture(mainfore_png);
 
+    tex_shanghi=0;
 	tex_shanghi=GRRLIB_LoadTexture(shanghi_png);
 
 	for(x=0;x<5;x++) {
-		strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[x]);
+		strsize=GRRLIB_GetStringWidth(CUR_FONT(0),curtext[x]);
 		mainhs[x][0]=320-strsize/2;
 		mainhs[x][2]=strsize;
 	}
@@ -806,12 +905,16 @@ void initOptionMenu() {
 }
 
 void initLangMenu() {
+//    curtext[0] = 0;
 	tex_menuback=GRRLIB_LoadJPG(mainback_jpg, mainback_jpg_size);
 	tex_menufore=GRRLIB_LoadTexture(mainfore_png);
+	tex_flags=0;
+	tex_languages=0;
 	tex_flags=GRRLIB_LoadTexture(flags_png);
 	tex_languages=GRRLIB_LoadTexture(languages_png);
 	tex_plus=GRRLIB_LoadTexture(HSplusButton_png);
 	tex_minus=GRRLIB_LoadTexture(HSminusButton_png);
+	curpage = 0;
 
 	curmenunum = LANG_MENU;
 }
@@ -831,6 +934,9 @@ void initLayoutMenu() {
 	tex_layout=GRRLIB_LoadTexture(layoutback_png);
 	tex_smalltile=GRRLIB_LoadTexture(smalltile_png);
 	tex_shade=GRRLIB_LoadTexture(shade_png);
+	tex_plus=GRRLIB_LoadTexture(HSplusButton_png);
+	tex_minus=GRRLIB_LoadTexture(HSminusButton_png);
+	curpage = 0;
 
 	curmenunum = LAYOUT_MENU;
 }
@@ -840,6 +946,8 @@ void killLayoutMenu() {
 	if(tex_layout) free(tex_layout);
 	if(tex_smalltile) free(tex_smalltile);
 	if(tex_shade) free(tex_shade);
+	if(tex_plus) free(tex_plus);
+	if(tex_minus) free(tex_minus);
 }
 
 void initTilesetMenu() {
@@ -887,9 +995,11 @@ void killTilesetMenu() {
 }
 
 void playWrong() {
-	SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+    if( opt_sound > 0)
+        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
 }
 
 void playClick() {
-	SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 8000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
+    if( opt_sound > 0)
+        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 36000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
 }

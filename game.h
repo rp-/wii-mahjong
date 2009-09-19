@@ -1,61 +1,7 @@
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
-//#include <malloc.h>
-//#include <math.h>
-//#include <ogcsys.h>
-//#include <gccore.h>
+#ifndef _game_h_
+#define _game_h_
+
 #include <wiiuse/wpad.h>
-
-#include "asndlib.h"       // sound library
-
-//#include <fat.h>
-//#include <time.h>
-
-#include "GRRLIB/GRRLIB.h"
-
-#include "gamenumbers_png.h"
-
-#include "libpng/pngu/pngu.h"
-
-//#include "gameback_jpg.h"
-
-#include "ts_spooky_png.h"
-#include "bk_spooky_jpg.h"
-
-//#include "tileset_png.h"
-#include "clock_png.h"
-#include "matches_png.h"
-#include "playerone_png.h"
-#include "playertwo_png.h"
-#include "pause_png.h"
-#include "paused_png.h"
-#include "pauseover_png.h"
-#include "hint_png.h"
-#include "hintover_png.h"
-#include "finished_png.h"
-#include "nomorematches_png.h"
-#include "winnerone_png.h"
-#include "winnertwo_png.h"
-#include "draw_png.h"
-
-#include "Click17a_raw.h"
-#include "gromb_raw.h"
-#include "ptwiiing_raw.h"
-#include "gong_raw.h"
-
-#include "a_yokatta_raw.h"
-#include "yatta_raw.h"
-#include "Haha_raw.h"
-#include "Haha2_raw.h"
-#include "oh_raw.h"
-#include "ohhh_raw.h"
-#include "mm_raw.h"
-#include "mmmm_raw.h"
-#include "aiee_raw.h"
-#include "nani_raw.h"
-#include "doshiyo_raw.h"
-#include "uss_raw.h"
 
 void initGame(int gm);
 
@@ -69,7 +15,7 @@ void checkSelectable();
 
 bool isSelectable(int x, int y, int z);
 
-boolean isHigher(char x,char y,char z);
+bool isHigher(char x,char y,char z);
 
 void killGame();
 
@@ -78,8 +24,6 @@ void setupGame();
 //void shufflePieces(int shuffles);
 
 void mixPairs(int shuffles);
-
-unsigned GRRLIB_Rand(unsigned long MAX);
 
 void drawGame();
 
@@ -95,7 +39,7 @@ int getTile();
 
 bool checkTile(int tile);
 
-boolean isCovered(int x,int y,int z);
+bool isCovered(int x,int y,int z);
 
 void drawBoard();
 
@@ -105,9 +49,17 @@ void drawMatches();
 
 void drawScores();
 
+void drawTilesLeft();
+
 void drawPauseIcon();
 
 void drawHintIcon();
+
+void drawUndoIcon();
+
+void undo();
+
+void storeUndo( int sel1, int sel2);
 
 void drawTile(f32 xpos, f32 ypos, unsigned char tile, bool sel, int player);
 
@@ -146,3 +98,4 @@ char realTileNum(char tileNum);
 void setupFade(int n);
 
 int whatGameMode();
+#endif

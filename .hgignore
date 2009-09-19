@@ -1,0 +1,10 @@
+glob:build/
+glob:*.cbp
+glob:screenshots/
+glob:*.dol
+glob:sound/*.raw
+glob:sound/*.[ch]
+glob:gfx/*.[hc]
+glob:mahjongglayouts.[ch]
+glob:mahjongg.layout
+glob:wiimahjongg.elf

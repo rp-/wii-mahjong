@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+ <app version="0.81">
+   <name>rpMahJongg Wii</name>
+   <coder>rp</coder>
+   <version>0.81</version>
+   <release_date>200908280000</release_date>
+   <short_description>rpMahJongg solitaire for Wii</short_description>
+   <long_description>
+v0.81 changes
+fixed widescreen bug
+other graphics and sounds :D
+
+
+Credits
+Thank you to all the following:
+
+Programming by JustWoody
+
+Graphics by DayDreamOz
+Spooky, Egyptian and Space tilesets and backgrounds by Mr_Nick666
+
+Music
+
+Oriental by Allister Brimble
+Sushi by Dr Awesome
+Nebulos by audiomonster
+Childhood by Sandra Chan
+Egypt crap(?) by The freak
+Graveyard by fleshbrain
+
+SFX
+
+Versus mode characterisations by Banjo Fett
+Tile click SFX by Partners in Rhyme,
+Tile pair selected SFX by Chris,
+Tile pair mismatch SFX by Public Domain 
+
+Testing by Cashman
+
+Translations
+
+French by Yod4z, Crayon and CashMan
+Italian by Charlespig
+German by Digdug
+Dutch by Digdug and Bitflusher
+Spanish by Xtract and CashMan
+Catalan by Xtract
+Japanese by HisshouBuraiKen
+Portuguese by Yod4z, Banjo Fett and CashMan
+Hungarian by Ezmegaz
+Finnish by Tubelinus
+Swedish by Tubelinus and noONE
+Danish by Buffstricker and Jedicommando 
+Norwegian by Raschi
+
+Libs
+The project uses devkitpro, GRRLib, sndlib, libpng, wiiuse, etc.
+
+(Thanks to all the devs on these projects for their excellent tools/libraries)
+</long_description>
+ </app>
