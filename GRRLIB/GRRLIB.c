@@ -607,7 +607,7 @@ int GRRLIB_GPrintf(f32 xpos, f32 ypos, u32 color, f32 zoomx, f32 zoomy, u8 align
 	return pix_size;
 }
 
-void GRRLIB_SetFont(u8 font[], u16 font_width, u16 font_height, char fontmap[], u8 chars_wide, u8 chars_high, u8 fontwidths[], int fnum) {
+void GRRLIB_SetFont(const u8 font[], const u16 font_width, const u16 font_height, const char fontmap[], const u8 chars_wide, const u8 chars_high, const u8 fontwidths[], const int fnum) {
 	fonts[fnum].font_array=(u8 *)font;
 	fonts[fnum].char_width=font_width;
 	fonts[fnum].char_height=font_height;

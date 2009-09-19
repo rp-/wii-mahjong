@@ -15,9 +15,9 @@
 #include <gccore.h>
 #include <fat.h>
 
-#include "../libpng/pngu/pngu.h"
+#include "../lib/libpng/pngu/pngu.h"
 #undef boolean
-#include "../libjpeg/jpeglib.h"
+#include "../lib/libjpeg/jpeglib.h"
 
 #define ALIGN_LEFT 1
 #define ALIGN_CENTRE 2
@@ -55,7 +55,7 @@ inline void GRRLIB_DrawGChar(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[
 //void GRRLIB_GPrintf(f32 xpos, f32 ypos, u8 font[], u16 font_width, u16 font_height, char *fontmap, u16 chars_wide, u16 chars_high, u32 color, f32 zoom, char *text,...);
 int GRRLIB_GPrintf(f32 xpos, f32 ypos, u32 color, f32 zoomx, f32 zoomy, u8 align, int fnum, const char *text,...);
 
-void GRRLIB_SetFont(u8 font[], u16 font_width, u16 font_height, char fontmap[], u8 chars_wide, u8 chars_high, u8 fontwidths[], int fnum);
+void GRRLIB_SetFont(const u8 font[], const u16 font_width, const u16 font_height, const char fontmap[], const u8 chars_wide, const u8 chars_high, const u8 fontwidths[], const int fnum);
 
 void GRRLIB_FreeFont(int fnum);
 
