@@ -136,9 +136,9 @@ static int imgx=0,imgacc=0;
 
 static unsigned char openTiles[36];
 
-static int pausepos[4] = {563,408,56,44};
-static int hintpos[4] = {563,353,56,44};
-static const int undopos[4] = {563,298,56,44};
+static int pausepos[4] = {578,408,56,44};
+static int hintpos[4] = {578,353,56,44};
+static const int undopos[4] = {578,298,56,44};
 static int menupos[4] = {499,398,108,56};
 static int shufflepos[4] = {463,328,168,48};
 static int restartpos[4] = {40,398,168,48};
@@ -927,7 +927,7 @@ void drawBoard() {
 }
 
 void drawTime() {
-	GRRLIB_DrawImg(573, 31, 40, 44, tex_clock, 0, 1, 1, 255);
+	GRRLIB_DrawImg(588, 31, 40, 44, tex_clock, 0, 1, 1, 255);
 	time_t curTime = time(NULL);
 	time_t difTime;
 	if(game_state==GAME_PAUSED)
@@ -937,24 +937,24 @@ void drawTime() {
 	char str[6];
 	strftime(str,15,"%M:%S",localtime(tilesLeft==0?&endTime:&difTime));
 
-	GRRLIB_GPrintf(592,72,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,str);
+	GRRLIB_GPrintf(602,72,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,str);
 }
 
 void drawMatches() {
-	GRRLIB_DrawImg(564, 103, 60, 44, tex_matches, 0, 1, 1, 255);
-	GRRLIB_GPrintf(593,146,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%02d",matches);
+	GRRLIB_DrawImg( 578, 103, 60, 44, tex_matches, 0, 1, 1, 255);
+	GRRLIB_GPrintf( 608,146,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%02d",matches);
 }
 
 void drawTilesLeft() {
-    GRRLIB_GPrintf( 593, 176, 0xFFFFFFFF, 1, 1, ALIGN_CENTRE, 0, "%03d", tilesLeft);
+    GRRLIB_GPrintf( 608, 176, 0xFFFFFFFF, 1, 1, ALIGN_CENTRE, 0, "%03d", tilesLeft);
 }
 
 void drawScores() {
-	GRRLIB_DrawImg(563, 30, 60, 44, tex_playerone, 0, 1, 1, 255);
-	GRRLIB_GPrintf(594,74,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%05d",score[0]);
+	GRRLIB_DrawImg(577, 30, 60, 44, tex_playerone, 0, 1, 1, 255);
+	GRRLIB_GPrintf(609,74,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%05d",score[0]);
 
-	GRRLIB_DrawImg(563, 115, 60, 44, tex_playertwo, 0, 1, 1, 255);
-	GRRLIB_GPrintf(594,159,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%05d",score[1]);
+	GRRLIB_DrawImg(577, 115, 60, 44, tex_playertwo, 0, 1, 1, 255);
+	GRRLIB_GPrintf(609,159,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%05d",score[1]);
 }
 
 void drawPauseIcon() {
