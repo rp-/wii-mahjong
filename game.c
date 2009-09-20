@@ -1418,6 +1418,8 @@ void undo()
 {
     if( undoTiles[0].x > 0)
     {
+        int i;
+        for( i = 0; i < 6; ++i) clearSelected(i);
         grid[undoTiles[0].x][undoTiles[0].y][undoTiles[0].z] = undoTiles[0].tile;
         tiles[undoTiles[0].tile] = undoTiles[0].type;
 
