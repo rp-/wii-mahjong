@@ -17,14 +17,6 @@
 
 #define NOTHING 0
 
-#define MAIN_POS 0
-#define PLAY_POS 5
-#define OPTIONS_POS 12
-#define SOUND_POS 18
-#define REMARK_POS 22
-#define LAYOUT_POS 36
-#define TILESET_POS 47
-
 #define ENGLISH 0
 #define FRENCH 1
 #define ITALIAN 2
@@ -52,6 +44,7 @@
 #define EGYPTIAN 4
 #define SPACE 5
 
+#include "languages.h"
 #include "mahjongglayouts.h"
 
 #include "gfx/ts_old_png.h"
@@ -69,7 +62,7 @@
 #define CONTAINS( vx, vy, x, y, width, height) ((vx) > (x) && (vx) < (x + width) && (vy) > (y) && (vy) < (y + height))
 #define CUR_FONT(a) ((opt_lang==JAPANESE?3:1) + (a?1:0))
 
-extern char *curtext[];
+extern char** curtext;
 extern u8 *tex_tileset;
 extern u8 *tex_gameback;
 extern u8 *layouts[];

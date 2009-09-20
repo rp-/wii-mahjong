@@ -204,17 +204,17 @@ void initGame(int gm) {
 	tex_numbers=GRRLIB_LoadTexture(gamenumbers_png);
 	GRRLIB_SetFont(tex_numbers,20, 24, "1234567890:x-", 13, 1, numwidths, 0);
 
-	int strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+1]);
+	int strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[LNG_GAME_MENU]);
 	menupos[0]=605-strsize;
 	menupos[2]=strsize;
 
-	strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+2]);
+	strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[LNG_GAME_SHUFFLE]);
 	shufflepos[0]=605-strsize;
 	shufflepos[2]=strsize;
 
-	restartpos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+6]);
-	newgamepos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+7]);
-	randomgamepos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[REMARK_POS+13]);
+	restartpos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[LNG_GAME_RESTART]);
+	newgamepos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[LNG_GAME_NEW]);
+	randomgamepos[2]=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[LNG_GAME_RANDOMLAYOUT]);
 
 	setupGame();
 }
@@ -474,16 +474,16 @@ void drawGame(){
 		case GAME_PAUSED :
 			GRRLIB_FillScreen(0xAA000000);
 			GRRLIB_DrawImg(198,134,228,196,tex_paused, 0, 1, 1, 255);
-			strlen = GRRLIB_GetStringWidth(CUR_FONT(false), curtext[REMARK_POS+3]);
+			strlen = GRRLIB_GetStringWidth(CUR_FONT(false), curtext[LNG_GAME_PAUSED]);
 			if(strlen>192) {
 				f32 zoom = 192.0/(float)strlen;;
-				GRRLIB_GPrintf(198+26,274,0xFFEEEEBB,zoom,1, ALIGN_LEFT,CUR_FONT(false),curtext[REMARK_POS+3]);
+				GRRLIB_GPrintf(198+26,274,0xFFEEEEBB,zoom,1, ALIGN_LEFT,CUR_FONT(false),curtext[LNG_GAME_PAUSED]);
 			}
 			else {
-				GRRLIB_GPrintf(198+22+200/2,274,0xFFEEEEBB,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[REMARK_POS+3]);
+				GRRLIB_GPrintf(198+22+200/2,274,0xFFEEEEBB,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[LNG_GAME_PAUSED]);
 			}
 
-			GRRLIB_GPrintf(restartpos[0], restartpos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(restartover),curtext[REMARK_POS+6]);
+			GRRLIB_GPrintf(restartpos[0], restartpos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(restartover),curtext[LNG_GAME_RESTART]);
 
 			drawPauseIcon();
 			break;
@@ -506,7 +506,7 @@ void drawGame(){
 				placeTilePair();
 
 			if(tot*2.5<=255) {
-				GRRLIB_GPrintf(320, 220,0xFFFFFFFF- (0x01000000*(tot*2.5)),1+((float)tot)/16,1+((float)tot)/32, ALIGN_CENTRE,CUR_FONT(true),curtext[REMARK_POS+2]);
+				GRRLIB_GPrintf(320, 220,0xFFFFFFFF- (0x01000000*(tot*2.5)),1+((float)tot)/16,1+((float)tot)/32, ALIGN_CENTRE,CUR_FONT(true),curtext[LNG_GAME_SHUFFLE]);
 			}
 
 			break;
@@ -516,18 +516,18 @@ void drawGame(){
 			if(gamemode==TWO_PLAYER_VERSUS) {
 				if(score[0]>score[1]) {
 					GRRLIB_DrawImg(185+imgx,103,260,220,tex_winnerone, 0, 1, 1, 255);
-					GRRLIB_GPrintf(181+imgx,232,0xFF9E9E6B,0.6,0.68, ALIGN_LEFT,CUR_FONT(false),curtext[REMARK_POS+9]);
-					GRRLIB_GPrintf(188+6+119+imgx,270,0xFFC02600,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[REMARK_POS+10]);
+					GRRLIB_GPrintf(181+imgx,232,0xFF9E9E6B,0.6,0.68, ALIGN_LEFT,CUR_FONT(false),curtext[LNG_GAME_WINNER]);
+					GRRLIB_GPrintf(188+6+119+imgx,270,0xFFC02600,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[LNG_GAME_PLAYER1]);
 				}
 				else
 				if(score[1]>score[0]) {
 					GRRLIB_DrawImg(185+imgx,103,260,220,tex_winnertwo, 0, 1, 1, 255);
-					GRRLIB_GPrintf(181+imgx,232,0xFF9E9E6B,0.6,0.68, ALIGN_LEFT,CUR_FONT(false),curtext[REMARK_POS+9]);
-					GRRLIB_GPrintf(188+6+119+imgx,270,0xFF8DC033,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[REMARK_POS+11]);
+					GRRLIB_GPrintf(181+imgx,232,0xFF9E9E6B,0.6,0.68, ALIGN_LEFT,CUR_FONT(false),curtext[LNG_GAME_WINNER]);
+					GRRLIB_GPrintf(188+6+119+imgx,270,0xFF8DC033,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[LNG_GAME_PLAYER2]);
 				}
 				else {
 					GRRLIB_DrawImg(150+imgx,99,344,224,tex_draw, 0, 1, 1, 255);
-					GRRLIB_GPrintf(188+4+119+imgx,260,0xFFA67319,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[REMARK_POS+12]);
+					GRRLIB_GPrintf(188+4+119+imgx,260,0xFFA67319,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[LNG_GAME_DRAW]);
 				}
 
 				GRRLIB_DrawImg(205, 330, 60, 44, tex_playerone, 0, 1, 1, 255- ((float)imgx*0.75));
@@ -537,13 +537,13 @@ void drawGame(){
 			else {
 				GRRLIB_DrawImg(186+imgx,151,252,172,tex_finished, 0, 1, 1, 255);
 
-				strlen = GRRLIB_GetStringWidth(CUR_FONT(false), curtext[REMARK_POS+5]);
+				strlen = GRRLIB_GetStringWidth(CUR_FONT(false), curtext[LNG_GAME_FINISHED]);
 				if(strlen>238) {
 					f32 zoom = (float)238/(float)strlen;
-					GRRLIB_GPrintf(185+8+imgx,255,0xFFEEEEBB,zoom,1, ALIGN_LEFT,CUR_FONT(false),curtext[REMARK_POS+5]);
+					GRRLIB_GPrintf(185+8+imgx,255,0xFFEEEEBB,zoom,1, ALIGN_LEFT,CUR_FONT(false),curtext[LNG_GAME_FINISHED]);
 				}
 				else {
-					GRRLIB_GPrintf(188+8+119+imgx,255,0xFFEEEEBB,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[REMARK_POS+5]);
+					GRRLIB_GPrintf(188+8+119+imgx,255,0xFFEEEEBB,1,1, ALIGN_CENTRE,CUR_FONT(false),curtext[LNG_GAME_FINISHED]);
 				}
 			}
 
@@ -552,22 +552,22 @@ void drawGame(){
 				imgacc--;
 			}
 
-			GRRLIB_GPrintf(newgamepos[0], newgamepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(newgameover),curtext[REMARK_POS+7]);
-			GRRLIB_GPrintf(randomgamepos[0], randomgamepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(randomgameover),curtext[REMARK_POS+13]);
+			GRRLIB_GPrintf(newgamepos[0], newgamepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(newgameover),curtext[LNG_GAME_RESTART]);
+			GRRLIB_GPrintf(randomgamepos[0], randomgamepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(randomgameover),curtext[LNG_GAME_RANDOMLAYOUT]);
 
-			GRRLIB_GPrintf(menupos[0], menupos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(menuover),curtext[REMARK_POS+1]);
+			GRRLIB_GPrintf(menupos[0], menupos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(menuover),curtext[LNG_GAME_MENU]);
 			break;
 		case GAME_NOMORE :
 			GRRLIB_FillScreen(0xAA000000);
 			GRRLIB_DrawImg(170+imgx,149,284,160,tex_nomorematches, 0, 1, 1, 255);
 
-			strlen = GRRLIB_GetStringWidth(CUR_FONT(false), curtext[REMARK_POS+4]);
+			strlen = GRRLIB_GetStringWidth(CUR_FONT(false), curtext[LNG_GAME_NOMORETILES]);
 			if(strlen>238) {
 				f32 zoom = (float)238/(float)strlen;
-				GRRLIB_GPrintf(170+32+imgx,250,0xFFEEEEBB,zoom,0.8, ALIGN_LEFT,CUR_FONT(false),curtext[REMARK_POS+4]);
+				GRRLIB_GPrintf(170+32+imgx,250,0xFFEEEEBB,zoom,0.8, ALIGN_LEFT,CUR_FONT(false),curtext[LNG_GAME_NOMORETILES]);
 			}
 			else {
-				GRRLIB_GPrintf(170+36+119+imgx,250,0xFFEEEEBB,1,0.8, ALIGN_CENTRE,CUR_FONT(false),curtext[REMARK_POS+4]);
+				GRRLIB_GPrintf(170+36+119+imgx,250,0xFFEEEEBB,1,0.8, ALIGN_CENTRE,CUR_FONT(false),curtext[LNG_GAME_NOMORETILES]);
 			}
 
 			if(imgx>0 && imgacc>0) {
@@ -575,10 +575,10 @@ void drawGame(){
 				imgacc--;
 			}
 
-			GRRLIB_GPrintf(restartpos[0], restartpos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(restartover),curtext[REMARK_POS+6]);
+			GRRLIB_GPrintf(restartpos[0], restartpos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(restartover),curtext[LNG_GAME_RESTART]);
 
-			GRRLIB_GPrintf(menupos[0], menupos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(menuover),curtext[REMARK_POS+1]);
-			GRRLIB_GPrintf(shufflepos[0], shufflepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(shuffleover),curtext[REMARK_POS+2]);
+			GRRLIB_GPrintf(menupos[0], menupos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(menuover),curtext[LNG_GAME_MENU]);
+			GRRLIB_GPrintf(shufflepos[0], shufflepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(shuffleover),curtext[LNG_GAME_SHUFFLE]);
 			break;
 	}
 }

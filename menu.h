@@ -10,8 +10,6 @@ void killMenuOther();
 
 void killMenuLanguages();
 
-void parseMenu(char *str);
-
 void drawMenu(WPADData *wd);
 
 void drawLayout(int n);
