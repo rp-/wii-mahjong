@@ -254,7 +254,7 @@ int main(int argc, char* argv[])
 			case STARTUP :
 				GRRLIB_FillScreen(0xFF000000);
 				GRRLIB_DrawImg(0, 0, 640, 480, tex_back, 0, 1, 1, alpha>255?255:alpha);
-				GRRLIB_DrawImg(68,308,242,68, tex_fore, 0, 1, 1, alpha>255?255:alpha);
+				GRRLIB_DrawImg(68,308, 256, 80, tex_fore, 0, 1, 1, alpha>255?255:alpha);
 				if(alpha++>394) {
 					main_mode=MENU;
 					if(tex_back) free(tex_back);
