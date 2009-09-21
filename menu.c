@@ -451,24 +451,24 @@ void drawLayout(int n) {
 	int x,y,z,c,l,pos=0;
 	int coord = n % 6;
 
-	for(z=0;z<MAX_LAYERS;z++) {
-		for(x=0;x<MAX_WIDTH;x++) {
-			for(y=0;y<MAX_HEIGHT;y++) {
+	for(z=0;z<MAX_LAYERS;++z) {
+		for(x=0;x<MAX_WIDTH;++x) {
+			for(y=0;y<MAX_HEIGHT;++y) {
 				grid[x][y][z]=0;
 			}
 		}
 	}
 
-	for(l=0;l<MAX_TILES;l++) {
+	for(l=0;l<MAX_TILES;++l) {
 		x=layouts[n][pos++];
 		y=layouts[n][pos++];
 		z=layouts[n][pos++];
 		grid[x][y][z]=255;
 	}
 
-	for(z=0;z<MAX_LAYERS;z++) {
-		for(x=0;x<MAX_WIDTH+MAX_HEIGHT;x++) {
-			for(y=(x>=MAX_WIDTH?x-MAX_WIDTH:0),c=(x>=MAX_WIDTH?MAX_WIDTH-1:x);y<MAX_HEIGHT && c>=0;y++,c--) {
+	for(z=0;z<MAX_LAYERS;++z) {
+		for(x=0;x<MAX_WIDTH+MAX_HEIGHT;++x) {
+			for(y=(x>=MAX_WIDTH?x-MAX_WIDTH:0),c=(x>=MAX_WIDTH?MAX_WIDTH-1:x);y<MAX_HEIGHT && c>=0;++y,--c) {
 				if(grid[c][y][z]==255) {
 					GRRLIB_DrawImg(layouths[coord][0]+14+c*5-z,layouths[coord][1]+34+y*7-z,12,16,tex_smalltile,0,1,1,255);
 				}
@@ -725,7 +725,7 @@ void checkSelected(WPADData *wd) {
 			break;
 		case SOUND_MENU :
 			for(x=0;x<3;x++) {
-				if((wd->ir.x)>soundhs[x][0] && (wd->ir.x)<(soundhs[x][0]+soundhs[x][2]-(x==2?1:48)) && (wd->ir.y)>soundhs[x][1] && (wd->ir.y)<(soundhs[x][1]+soundhs[x][3])) {
+				if( CONTAINS( wd->ir.x, wd->ir.y, soundhs[x][0], soundhs[x][1], soundhs[x][2] - (x==2?1:48), soundhs[x][3] ) ) {
 					msel=x;
 					return;
 				}
@@ -733,7 +733,7 @@ void checkSelected(WPADData *wd) {
 			break;
 		case OPTIONS_MENU :
 			for(x=0;x<7;x++) {
-				if((wd->ir.x)>opths[x][0] && (wd->ir.x)<(opths[x][0]+opths[x][2]) && (wd->ir.y)>opths[x][1] && (wd->ir.y)<(opths[x][1]+opths[x][3])) {
+				if( CONTAINS( wd->ir.x, wd->ir.y, opths[x][0], opths[x][1], opths[x][2], opths[x][3]) ) {
 					msel=x;
 					return;
 				}
@@ -741,19 +741,19 @@ void checkSelected(WPADData *wd) {
 			break;
 		case LANG_MENU :
 			for(x=0;x<9;x++) {
-				if((wd->ir.x)>langhs[x][0] && (wd->ir.x)<(langhs[x][0]+148) && (wd->ir.y)>langhs[x][1] && (wd->ir.y)<(langhs[x][1]+108)) {
+				if( CONTAINS( wd->ir.x, wd->ir.y, langhs[x][0], langhs[x][1], 148, 108) ) {
 					msel=x;
 					return;
 				}
 			}
 			if(curpage==0) {
-				if((wd->ir.x)>580 && (wd->ir.x)<620 && (wd->ir.y)>220 && (wd->ir.y)<260)
+				if( CONTAINS( wd->ir.x, wd->ir.y, 580, 220, 620, 260) )
 					btnover=true;
 				else
 					btnover=false;
 			}
 			else {
-				if((wd->ir.x)>10 && (wd->ir.x)<50 && (wd->ir.y)>220 && (wd->ir.y)<260)
+				if( CONTAINS( wd->ir.x, wd->ir.y, 10, 220, 50, 260) )
 					btnover=true;
 				else
 					btnover=false;
@@ -761,19 +761,19 @@ void checkSelected(WPADData *wd) {
 			break;
 		case LAYOUT_MENU :
 			for(x=0;x<6;x++) {
-				if((wd->ir.x)>layouths[x][0] && (wd->ir.x)<(layouths[x][0]+168) && (wd->ir.y)>layouths[x][1] && (wd->ir.y)<(layouths[x][1]+170)) {
+				if( CONTAINS( wd->ir.x, wd->ir.y, layouths[x][0], layouths[x][1], 168, 170) ) {
 					msel=x;
 					return;
 				}
 			}
 			if(curpage==0) {
-				if((wd->ir.x)>600 && (wd->ir.x)<640 && (wd->ir.y)>240 && (wd->ir.y)<280)
+				if( CONTAINS( wd->ir.x, wd->ir.y, 600, 240, 640, 280) )
 					btnover=true;
 				else
 					btnover=false;
 			}
 			else {
-				if((wd->ir.x)>0 && (wd->ir.x)<40 && (wd->ir.y)>240 && (wd->ir.y)<280)
+				if( CONTAINS( wd->ir.x, wd->ir.y, 0, 240, 40, 280) )
 					btnover=true;
 				else
 					btnover=false;
@@ -782,7 +782,7 @@ void checkSelected(WPADData *wd) {
 			break;
 		case TILESET_MENU :
 			for(x=0;x<6;x++) {
-				if((wd->ir.x)>tileseths[x][0] && (wd->ir.x)<(tileseths[x][0]+168) && (wd->ir.y)>tileseths[x][1] && (wd->ir.y)<(tileseths[x][1]+170)) {
+				if( CONTAINS( wd->ir.x, wd->ir.y, tileseths[x][0], tileseths[x][1], 168, 170) ) {
 					msel=x;
 					return;
 				}
