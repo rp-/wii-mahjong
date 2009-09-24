@@ -12,6 +12,7 @@
 #define HOVER_HINT_OFF 31
 
 #define LAYOUTS 12
+#define FILE_HIGHSCORE "high.sco"
 
 #define EXIT 999
 
@@ -66,6 +67,7 @@ extern char** curtext;
 extern u8 *tex_tileset;
 extern u8 *tex_gameback;
 extern u8 *layouts[];
+extern unsigned long g_scores[LAYOUTS * 2];
 
 extern bool opt_rumble, opt_hoverhint, opt_widescreen, opt_voices;
 extern int opt_sound, opt_music, opt_layout, opt_lang, opt_tileset;

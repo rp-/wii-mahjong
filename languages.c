@@ -1,5 +1,16 @@
 #include "languages.h"
 
+#include <string.h>
+
+int lng_IndexFromString( const char* str)
+{
+    int index = 0;
+
+    while( strcmp( str, english_lng[index]) != 0 && index < LNG_MAXENTRIES) index++;
+
+    return index;
+}
+
 const char* const english_lng[] = {
     "PLAY GAME",
     "HI-SCORES",

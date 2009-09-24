@@ -63,4 +63,6 @@ enum languages
 extern const char* const english_lng[];
 extern const char* const german_lng[];
 
+int lng_IndexFromString( const char* str);
+
 #endif

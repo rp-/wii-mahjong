@@ -10,7 +10,6 @@
 #include <ogcsys.h>
 #include <gccore.h>
 #include <wiiuse/wpad.h>
-#include <fat.h>
 #include <unistd.h>
 
 #include "asndlib.h"       // sound library
@@ -23,6 +22,7 @@
 
 #include "menu.h"
 #include "game.h"
+#include "disk.h"
 
 #include "sound/sushi_mod.h"
 #include "sound/dojo_dan_oriental_mod.h"
@@ -45,7 +45,7 @@ static MODPlay mod_track;
 #define STARTUP 2
 #define GAME 1
 #define MENU 0
-#define CFGFILE "rpmjg.cfg"
+#define FILE_CFG "rpmjg.cfg"
 
 static int main_mode=STARTUP;
 static int alpha=0;//,xm=64,xs=255;
@@ -56,60 +56,9 @@ int opt_sound=255, opt_music=64, opt_layout=0, opt_lang=-1, opt_tileset=0;
 static int evctr = 0;
 
 u8 *layouts[LAYOUTS]; //extern
+unsigned long g_scores[LAYOUTS * 2]; //extern
 
 static const int languages[] = {JAPANESE,ENGLISH,GERMAN,FRENCH,SPANISH,ITALIAN,DUTCH};
-
-static bool loadConfig() {
-	if(!fatInitDefault()) return false;
-
-	FILE *fp;
-
-	if((fp = fopen(CFGFILE,"rb"))==NULL) return false;
-
-	// get the version number in case it older than current
-	int version=getc(fp);
-
-	opt_music=getc(fp);
-	opt_sound=getc(fp);
-	opt_layout=getc(fp);
-	opt_lang=getc(fp);
-	opt_rumble=getc(fp)==1?true:false;
-	opt_hoverhint=getc(fp)==1?true:false;
-	if(version>7) {
-		opt_widescreen=getc(fp)==1?true:false;
-		opt_tileset=getc(fp);
-	}
-	else {
-		opt_widescreen=false;
-		opt_tileset=0;
-	}
-
-	fclose(fp);
-
-	return true;
-}
-
-static void saveConfig() {
-	if(!fatInitDefault()) return;
-
-	FILE *fp;
-
-	if((fp = fopen(CFGFILE,"wb"))==NULL) return;
-
-	// first write the version number so we can identify this on load in case it changes
-	putc(8,fp);
-
-	putc(opt_music, fp);
-	putc(opt_sound, fp);
-	putc(opt_layout, fp);
-	putc(opt_lang, fp);
-	putc(opt_rumble?1:0, fp);
-	putc(opt_hoverhint?1:0, fp);
-	putc(opt_widescreen?1:0, fp);
-	putc(opt_tileset, fp);
-
-	fclose(fp);
-}
 
 static void processMenuOption(int menuopt) {
 	switch(menuopt) {
@@ -119,7 +68,7 @@ static void processMenuOption(int menuopt) {
 			WPAD_Shutdown();
 			SND_End();
 			GRRLIB_Stop();
-			saveConfig();
+			saveConfig(FILE_CFG);
 			// if we have been launched from a channel then reset to menu
 			if (!*((u32*) 0x80001800)) {
 				WII_Initialize();
@@ -187,6 +136,27 @@ static void WiimotePowerPressed(s32 chan)
 	HWButton = SYS_POWEROFF_STANDBY;
 }
 
+static void initMain()
+{
+
+	// try to load a saved config, if none then get Wii language menu
+	if(!loadConfig(FILE_CFG)) {
+		// get the language of the Wii menu and map this to the Mahjongg Wii languages
+		if(CONF_GetLanguage()<7) opt_lang = languages[CONF_GetLanguage()];
+	}
+	GRRLIB_Widescreen(opt_widescreen);
+
+	// setup the layouts array for use in menu and game
+	setupLayouts();
+
+    //init scores with 0
+    int i;
+    for( i = 0; i < LAYOUTS * 2; ++i){
+        g_scores[i] = 0;
+    }
+    //load scores
+	loadHighscores( FILE_HIGHSCORE, g_scores);
+}
 
 int main(int argc, char* argv[])
 {
@@ -195,16 +165,15 @@ int main(int argc, char* argv[])
 	u8 *tex_back=GRRLIB_LoadJPG(bigmenuback_jpg, bigmenuback_jpg_size);
 	u8 *tex_fore=GRRLIB_LoadTexture(credits_png);
 
-	GRRLIB_InitVideo();
+    GRRLIB_InitVideo();
 	WPAD_Init();
 
 	SYS_SetResetCallback(WiiResetPressed);
 	SYS_SetPowerCallback(WiiPowerPressed);
 	WPAD_SetPowerButtonCallback(WiimotePowerPressed);
+    rmode = VIDEO_GetPreferredMode(NULL);
 
-	rmode = VIDEO_GetPreferredMode(NULL);
-
-	SND_Init(INIT_RATE_48000); // Initialize the Sound Lib
+    SND_Init(INIT_RATE_48000); // Initialize the Sound Lib
 
 	MODPlay_Init(&mod_track);
 
@@ -221,21 +190,13 @@ int main(int argc, char* argv[])
         MODPlay_Start (&mod_track); // Play the MOD
     }
 
-	WPAD_SetDataFormat(WPAD_CHAN_ALL, WPAD_FMT_BTNS_ACC_IR);
+    WPAD_SetDataFormat(WPAD_CHAN_ALL, WPAD_FMT_BTNS_ACC_IR);
 
 	WPAD_SetVRes(WPAD_CHAN_ALL, rmode->fbWidth, rmode->xfbHeight);
 
-	// try to load a saved config, if none then get Wii language menu
-	if(!loadConfig()) {
-		// get the language of the Wii menu and map this to the Mahjongg Wii languages
-		if(CONF_GetLanguage()<7) opt_lang = languages[CONF_GetLanguage()];
-	}
-	GRRLIB_Widescreen(opt_widescreen);
+    initMain();
 
 	MODPlay_SetVolume( &mod_track, opt_music, opt_music);
-
-	// setup the layouts array for use in menu and game
-	setupLayouts();
 
 	while( HWButton == 0) {
 		WPAD_ScanPads();
@@ -359,7 +320,7 @@ int main(int argc, char* argv[])
     WPAD_Shutdown();
     SND_End();
     GRRLIB_Stop();
-    saveConfig();
+    saveConfig(FILE_CFG);
     SYS_ResetSystem(HWButton, 0, 0);
 
 	return 0;
