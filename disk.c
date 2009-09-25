@@ -68,7 +68,7 @@ int saveHighscore( const char* scoreFileName, unsigned long scores[])
     if(!fatInitDefault()) retStatus = 0;
 
     FILE *fp;
-    if( (fp = fopen(scoreFileName, "w+") ) != NULL)
+    if( (fp = fopen(scoreFileName, "w+") ) != NULL && retStatus > 0)
     {
         for(i = 0; i < LAYOUTS * 2; i += 2)
         {
@@ -97,7 +97,7 @@ int loadHighscores( const char* scoreFileName, unsigned long scores[])
     if(!fatInitDefault()) retStatus = 0;
 
     FILE* fp;
-    if( (fp = fopen(scoreFileName, "r")) != NULL)
+    if( (fp = fopen(scoreFileName, "r")) != NULL && retStatus > 0)
     {
         for(i = 0; i < LAYOUTS * 2; i += 2)
         {
@@ -105,16 +105,20 @@ int loadHighscores( const char* scoreFileName, unsigned long scores[])
             if( line != NULL)
             {
                 sscanf( line, "%d;%lu", &index, &score);
-                if( index >= LNG_LAYOUT_DEFAULT && index < LNG_MAXENTRIES)
+                if( index >= 0 && index < LAYOUTS * 2)
                     scores[index] = score;
+            }
+            fgets( line, LINESIZE, fp);
+            if( line != NULL)
+            {
                 sscanf( line, "%d;%lu", &index, &score);
-                if( index >= LNG_LAYOUT_DEFAULT && index < LNG_MAXENTRIES)
+                if( index >= 0 && index < LAYOUTS * 2)
                     scores[index] = score;
             }
         }
     }
     else
-        retStatus = 0;
+        retStatus = -1;
     fclose( fp);
 
     return retStatus;
