@@ -1437,6 +1437,7 @@ void undo()
         checkSelectable();
         goesLeft();
         tilesLeft += 2;
+        startTime -= 15;
     }
     undoTiles[0].x = -1; //disable until next remove of a tile
 }
