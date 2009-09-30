@@ -1012,6 +1012,7 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 					mixPairs(tilesLeft*6);
 					resetToPlaces();
 					shuffleretries=0;
+					startTime -= 60; //punish shuffling with 60secs
 					bestGuessNum=MAX_TILES;
 					game_state=GAME_SHUFFLE;
 				}
