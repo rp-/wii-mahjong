@@ -1,4 +1,3 @@
-#include <fat.h>
 #include <stdio.h>
 
 #include "disk.h"
@@ -7,8 +6,6 @@
 
 bool loadConfig(const char* filename)
 {
-	if(!fatInitDefault()) return false;
-
 	FILE *fp;
 
 	if((fp = fopen(filename,"rb"))==NULL) return false;
@@ -38,8 +35,6 @@ bool loadConfig(const char* filename)
 
 void saveConfig(const char* filename)
 {
-	if(!fatInitDefault()) return;
-
 	FILE *fp;
 
 	if((fp = fopen(filename,"wb"))==NULL) return;
@@ -64,8 +59,6 @@ int saveHighscore( const char* scoreFileName, unsigned long scores[])
     int retStatus = 1;
     int i = 0;
     char line[LINESIZE];
-
-    if(!fatInitDefault()) retStatus = 0;
 
     FILE *fp;
     if( (fp = fopen(scoreFileName, "w+") ) != NULL && retStatus > 0)
@@ -93,8 +86,6 @@ int loadHighscores( const char* scoreFileName, unsigned long scores[])
     unsigned long score;
     int retStatus = 1;
     int index;
-
-    if(!fatInitDefault()) retStatus = 0;
 
     FILE* fp;
     if( (fp = fopen(scoreFileName, "r")) != NULL && retStatus > 0)

@@ -11,6 +11,7 @@
 #include <gccore.h>
 #include <wiiuse/wpad.h>
 #include <unistd.h>
+#include <fat.h>
 
 #include "asndlib.h"       // sound library
 
@@ -165,6 +166,7 @@ int main(int argc, char* argv[])
 	u8 *tex_back=GRRLIB_LoadJPG(bigmenuback_jpg, bigmenuback_jpg_size);
 	u8 *tex_fore=GRRLIB_LoadTexture(credits_png);
 
+    fatInitDefault();
     GRRLIB_InitVideo();
 	WPAD_Init();
 
