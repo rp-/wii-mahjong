@@ -1354,17 +1354,24 @@ void finishGame() {
 		}
 	}
 	else {
-	    //write highscore
-	    if( endTime < g_scores[opt_layout * 2 -1])
+	    //write highscore if it is a new high score
+	    if( g_scores[opt_layout * 2 + gamemode - 1] > 0)
         {
-            g_scores[opt_layout * 2 - 1] = endTime;
+            if( endTime < g_scores[opt_layout * 2 + gamemode - 1] )
+            {
+                g_scores[opt_layout * 2 + gamemode - 1] = endTime;
+                saveHighscore( FILE_HIGHSCORE, g_scores);
+            }
+        }
+        else
+        {
+            g_scores[opt_layout * 2 + gamemode - 1] = endTime;
             saveHighscore( FILE_HIGHSCORE, g_scores);
         }
 		int x;
 		for(x=0;x<8;x++) {
 			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 22050, x*148,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
 		}
-
 	}
 }
 
