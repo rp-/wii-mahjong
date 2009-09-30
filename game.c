@@ -980,7 +980,7 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 	if(game_state==GAME_BOARDINIT) return false;
 
 	if(game_state==GAME_FINISHED || game_state==GAME_NOMORE) {
-		if((wd_one->ir.x)>menupos[0] && (wd_one->ir.x)<(menupos[0]+menupos[2]) && (wd_one->ir.y)>menupos[1] && (wd_one->ir.y)<(menupos[1]+menupos[3]))
+		if( CONTAINS( wd_one->ir.x, wd_one->ir.y, menupos[0], menupos[1], menupos[2], menupos[3]) )
 			menuover=true;
 		else
 			menuover=false;
@@ -998,13 +998,14 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
                 randomgameover=false;
 		}
 
-		if(game_state==GAME_NOMORE && (wd_one->ir.x)>restartpos[0] && (wd_one->ir.x)<(restartpos[0]+restartpos[2]) && (wd_one->ir.y)>restartpos[1] && (wd_one->ir.y)<(restartpos[1]+restartpos[3]))
+		if(game_state==GAME_NOMORE && CONTAINS( wd_one->ir.x, wd_one->ir.y, restartpos[0], restartpos[1], restartpos[2], restartpos[3]) )
 			restartover=true;
 		else
 			restartover=false;
 
 		if(tilesLeft>0) {
-			if((wd_one->ir.x)>shufflepos[0] && (wd_one->ir.x)<(shufflepos[0]+shufflepos[2]) && (wd_one->ir.y)>shufflepos[1] && (wd_one->ir.y)<(shufflepos[1]+shufflepos[3])) {
+			if( CONTAINS( wd_one->ir.x, wd_one->ir.y, shufflepos[0], shufflepos[1], shufflepos[2], shufflepos[3]) )
+			{
 				shuffleover=true;
 				if(btns_one & WPAD_BUTTON_A) {
 					compressTiles();
@@ -1048,24 +1049,24 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 		return false;
 	}
 
-	if((wd_one->ir.x)>pausepos[0] && (wd_one->ir.x)<(pausepos[0]+pausepos[2]) && (wd_one->ir.y)>pausepos[1] && (wd_one->ir.y)<(pausepos[1]+pausepos[3]))
+	if( CONTAINS( wd_one->ir.x, wd_one->ir.y, pausepos[0], pausepos[1], pausepos[2], pausepos[3]) )
 		pauseover=true;
 	else
 		pauseover=false;
 
 	if(gamemode!=TWO_PLAYER_VERSUS) {
-		if((wd_one->ir.x)>hintpos[0] && (wd_one->ir.x)<(hintpos[0]+hintpos[2]) && (wd_one->ir.y)>hintpos[1] && (wd_one->ir.y)<(hintpos[1]+hintpos[3]))
+		if( CONTAINS( wd_one->ir.x, wd_one->ir.y, hintpos[0], hintpos[1], hintpos[2], hintpos[3]) )
 			hintover=true;
 		else
 			hintover=false;
         //undo
-		if((wd_one->ir.x)>undopos[0] && (wd_one->ir.x)<(undopos[0]+undopos[2]) && (wd_one->ir.y)>undopos[1] && (wd_one->ir.y)<(undopos[1]+undopos[3]))
+		if( CONTAINS( wd_one->ir.x, wd_one->ir.y, undopos[0], undopos[1], undopos[2], undopos[3]) )
 			undoover=true;
 		else
 			undoover=false;
 	}
 
-	if(game_state==GAME_PAUSED && (wd_one->ir.x)>restartpos[0] && (wd_one->ir.x)<(restartpos[0]+restartpos[2]) && (wd_one->ir.y)>restartpos[1] && (wd_one->ir.y)<(restartpos[1]+restartpos[3]))
+	if(game_state==GAME_PAUSED && CONTAINS( wd_one->ir.x, wd_one->ir.y, restartpos[0], restartpos[1], restartpos[2], restartpos[3]) )
 		restartover=true;
 	else
 		restartover=false;
