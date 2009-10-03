@@ -80,6 +80,7 @@
 #define LANG_MENU 4
 #define LAYOUT_MENU 5
 #define TILESET_MENU 6
+#define HIGHSCORE_MENU 7
 
 static int mainhs[5][4] = {{201,199,240,56},{226,250,192,44},{192,299,256,48},{181,348,280,44},{277,395,88,48}};
 
@@ -419,6 +420,7 @@ void drawMenu(WPADData *wd) {
 			}
 			break;
 		case TILESET_MENU :
+		{
 			GRRLIB_GPrintf(320,27,0xFFFFFFFF,1,1, ALIGN_CENTRE,CUR_FONT(true),curtext[LNG_OMENU_CTILESET]);
 
 			for(x=0;x<6;x++) {
@@ -441,8 +443,13 @@ void drawMenu(WPADData *wd) {
 					else
 						GRRLIB_GPrintf(layouths[x][0]+77,layouths[x][1]+152,0xFFFFFFFF,0.55,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_TILESET_DEFAULT+x]);
 			}
-
-			break;
+		}
+		break;
+		case HIGHSCORE_MENU:
+		{
+            GRRLIB_GPrintf( 320, 27, 0xFFFFFFFF, 1, 1, ALIGN_CENTRE, CUR_FONT(true), curtext[LNG_MMENU_HISCORES]);
+		}
+		break;
 	}
 }
 
@@ -486,26 +493,32 @@ int menuWiimote(WPADData *wd, u32 wpaddown) {
 		switch(curmenunum) {
 			case MAIN_MENU :
 				switch(msel) {
-					case 0 :
+					case 0:
+                        //play menu
 						playClick();
 						killMainMenu();
 						initPlayMenu();
 						break;
 					case 1 :
-						playWrong();
-						// Hi Score
+                        //hi score
+						playClick();
+                        killMainMenu();
+                        initHighscoreMenu();
 						break;
 					case 2 :
+                        //optionsmenu
 						playClick();
 						killMainMenu();
 						initOptionMenu();
 						break;
 					case 3 :
+                        //sound menu
 						playClick();
 						killMainMenu();
 						initSoundMenu();
 						break;
 					case 4 :
+                        //exit
 						playClick();
 						killMainMenu();
 						return EXIT;
@@ -625,13 +638,26 @@ int menuWiimote(WPADData *wd, u32 wpaddown) {
 				}
 				break;
 			case TILESET_MENU :
+			{
 				if(msel>-1) {
 					playClick();
 					opt_tileset=msel;
 					killTilesetMenu();
 					initOptionMenu();
 				}
-				break;
+			}
+			break;
+
+			case HIGHSCORE_MENU:
+			{
+			    if(msel>-1)
+			    {
+			        playClick();
+			        killHighscoreMenu();
+			        initMainMenu();
+			    }
+			}
+			break;
 		}
 	}
 
@@ -681,10 +707,20 @@ int menuWiimote(WPADData *wd, u32 wpaddown) {
 				initOptionMenu();
 				break;
 			case TILESET_MENU :
+			{
 				playClick();
 				killTilesetMenu();
 				initOptionMenu();
-				break;
+			}
+			break;
+
+			case HIGHSCORE_MENU:
+			{
+                playClick();
+                killHighscoreMenu();
+                initMainMenu();
+			}
+			break;
 		}
 	}
 
@@ -760,6 +796,7 @@ void checkSelected(WPADData *wd) {
 			}
 			break;
 		case LAYOUT_MENU :
+		{
 			for(x=0;x<6;x++) {
 				if( CONTAINS( wd->ir.x, wd->ir.y, layouths[x][0], layouths[x][1], 168, 170) ) {
 					msel=x;
@@ -779,15 +816,24 @@ void checkSelected(WPADData *wd) {
 					btnover=false;
 			}
 			break;
-			break;
+        }
+        break;
 		case TILESET_MENU :
+		{
 			for(x=0;x<6;x++) {
 				if( CONTAINS( wd->ir.x, wd->ir.y, tileseths[x][0], tileseths[x][1], 168, 170) ) {
 					msel=x;
 					return;
 				}
 			}
-			break;
+		}
+		break;
+
+		case HIGHSCORE_MENU:
+		{
+		    msel = -1;
+		}
+		break;
 	}
 	msel=-1;
 }
@@ -973,6 +1019,17 @@ void killTilesetMenu() {
 	if(tex_bk[3]) free(tex_bk[3]);
 	if(tex_bk[4]) free(tex_bk[4]);
 	if(tex_bk[5]) free(tex_bk[5]);
+}
+
+void initHighscoreMenu()
+{
+    tex_menuback=GRRLIB_LoadJPG(mainback_jpg, mainback_jpg_size);
+    curmenunum = HIGHSCORE_MENU;
+}
+
+void killHighscoreMenu()
+{
+    if( tex_menuback) free(tex_menuback);
 }
 
 void playWrong() {

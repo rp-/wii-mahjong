@@ -44,6 +44,10 @@ void initTilesetMenu();
 
 void killTilesetMenu();
 
+void initHighscoreMenu();
+
+void killHighscoreMenu();
+
 void playWrong();
 
 void playClick();
