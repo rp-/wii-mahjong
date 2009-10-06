@@ -1034,10 +1034,10 @@ void killHighscoreMenu()
 
 void playWrong() {
     if( opt_sound > 0)
-        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
 }
 
 void playClick() {
     if( opt_sound > 0)
-        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_8BIT, 36000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
+        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 36000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
 }

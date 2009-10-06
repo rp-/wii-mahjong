@@ -16,7 +16,7 @@ all: $(HFILES)
 	raw2c $<
 
 %.raw: %.wav 
-	sox -V $< -c 1 --bits 8 -B -s $@
+	sox -V $< -c 1 --bits 16 -B -s $@
 #	sox -V $< -c 1 --bits 8 -B -s $@ vol 2
 
 clean:
