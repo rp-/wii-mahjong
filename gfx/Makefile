@@ -13,10 +13,10 @@ GFXFILES := $(HGFXFILES) $(CPNGFILES) $(CJPGFILES)
 all: $(HGFXFILES)
 
 %.h: %.png
-	raw2c $<
+	$(DEVKITPPC)/bin/raw2c $<
 
 %.h: %.jpg
-	raw2c $<
+	$(DEVKITPPC)/bin/raw2c $<
 
 clean:
 	rm -f $(GFXFILES)

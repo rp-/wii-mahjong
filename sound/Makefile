@@ -10,10 +10,10 @@ HFILES += $(MODFILES:%.mod=%.h)
 all: $(HFILES)
 
 %.h: %.raw 
-	raw2c $<
+	$(DEVKITPPC)/bin/raw2c $<
 
 %.h: %.mod
-	raw2c $<
+	$(DEVKITPPC)/bin/raw2c $<
 
 %.raw: %.wav 
 	sox -V $< -c 1 --bits 16 -B -s $@
