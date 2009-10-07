@@ -156,7 +156,7 @@ static void initMain()
         g_scores[i] = 0;
     }
     //load scores
-	loadHighscores( FILE_HIGHSCORE, g_scores);
+    loadHighscores( FILE_HIGHSCORE, g_scores);
 }
 
 int main(int argc, char* argv[])
@@ -218,7 +218,7 @@ int main(int argc, char* argv[])
 				GRRLIB_FillScreen(0xFF000000);
 				GRRLIB_DrawImg(0, 0, 640, 480, tex_back, 0, 1, 1, alpha>255?255:alpha);
 				GRRLIB_DrawImg(68,308, 256, 80, tex_fore, 0, 1, 1, alpha>255?255:alpha);
-				if(alpha++>394) {
+				if(alpha++>394 || wpad_one_down > 0) {
 					main_mode=MENU;
 					if(tex_back) free(tex_back);
 					if(tex_fore) free(tex_fore);
