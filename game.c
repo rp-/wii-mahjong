@@ -98,7 +98,10 @@ static unsigned char bestGuess[MAX_TILES];
 static unsigned char tiles[MAX_TILES];
 
 static int game_state=GAME_PLAY;
-static int tot=0,dif=2,score[2],shuffleretries,totals[2]={0,0};
+static int tot=0,dif=2,score[2],shuffleretries;
+
+// current versus standings
+static unsigned int totals[2]={0,0};
 
 static u8 *mtl=(u8 *)default_mtl;
 
@@ -537,6 +540,10 @@ void drawGame(){
 				GRRLIB_GPrintf(315, 340,0xFFFFFFFF - ((float)imgx*0.75)*0x01000000,1,1,ALIGN_CENTRE,0,"%02d - %02d",totals[0],totals[1]);
 			}
 			else {
+				if( totals[0] > 0) //this indicates that a new highscore was reached
+				{
+					GRRLIB_GPrintf( 30, 50, 0xFFFFFFFF, 1, 1, ALIGN_CENTRE, CUR_FONT(true), "NEW HIGHSCORE");
+				}
 				GRRLIB_DrawImg(186+imgx,151,252,172,tex_finished, 0, 1, 1, 255);
 
 				strlen = GRRLIB_GetStringWidth(CUR_FONT(false), curtext[LNG_GAME_FINISHED]);
@@ -1338,7 +1345,7 @@ void removeMatched(int player,int s1, int s2) {
 
 }
 
-static bool checkHighscore()
+static bool checkAndSaveHighscore()
 {
     bool saved;
     if( g_scores[opt_layout * 2 + gamemode - 1] > 0)
@@ -1377,8 +1384,9 @@ void finishGame() {
 		}
 	}
 	else {
-	    //write highscore if it is a new high score
-        checkHighscore();
+	  //write highscore if it is a new high score and set help variable totals to show message
+		totals[0] = checkAndSaveHighscore() ? 1 : 0;
+
 		int x;
 		for(x=0;x<8;x++) {
 			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, x*148,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
