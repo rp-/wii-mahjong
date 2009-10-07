@@ -944,7 +944,7 @@ void drawTime() {
 	else
 		difTime= curTime - startTime;
 	char str[6];
-	strftime(str,15,"%M:%S",localtime(tilesLeft==0?&endTime:&difTime));
+	strftime(str, 6,"%M:%S",localtime(tilesLeft==0?&endTime:&difTime));
 
 	GRRLIB_GPrintf(602,72,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,str);
 }
