@@ -12,8 +12,6 @@
 
 #include "disk.h"
 
-#include "gfx/gamenumbers_png.h"
-
 //#include "gameback_jpg.h"
 
 #include "gfx/bk_spooky_jpg.h"
@@ -82,7 +80,7 @@
 #define GAME_NOMORE 5
 #define GAME_BOARDINIT 6
 
-static u8 *tex_tiles, *tex_numbers, *tex_clock, *tex_matches, *tex_pause, *tex_pauseover, *tex_paused, *tex_finished;
+static u8 *tex_tiles, *tex_clock, *tex_matches, *tex_pause, *tex_pauseover, *tex_paused, *tex_finished;
 static u8 *tex_hint, *tex_hintover, *tex_playerone, *tex_playertwo, *tex_winnerone, *tex_winnertwo, *tex_draw, *tex_nomorematches;
 static u8 *tex_undo, *tex_undoover;
 u8* tex_gameback;
@@ -121,8 +119,6 @@ static selection sel[6] = {{SEL_NONE,BLANK,-1,-1,-1},{SEL_NONE,BLANK,-1,-1,-1},
 					{SEL_NONE,BLANK,-1,-1,-1},{SEL_NONE,BLANK,-1,-1,-1}};
 
 static const u32 playercol[3] = {0x00001111,0x00110011,0x00000011};
-
-static const unsigned char numwidths[] = {10,15,16,17,15,16,16,15,16,16,10,11,6};
 
 typedef struct fadestruct {
 	u8 alpha;
@@ -205,9 +201,6 @@ void initGame(int gm) {
 	tex_winnerone=GRRLIB_LoadTexture(winnerone_png);
 	tex_winnertwo=GRRLIB_LoadTexture(winnertwo_png);
 	tex_draw=GRRLIB_LoadTexture(draw_png);
-
-	tex_numbers=GRRLIB_LoadTexture(gamenumbers_png);
-	GRRLIB_SetFont(tex_numbers,20, 24, "1234567890:x-", 13, 1, numwidths, 0);
 
 	int strsize=GRRLIB_GetStringWidth(CUR_FONT(false),curtext[LNG_GAME_MENU]);
 	menupos[0]=605-strsize;
@@ -330,8 +323,6 @@ bool isHigher(char x,char y,char z) {
 }
 
 void killGame() {
-	if(tex_numbers) free(tex_numbers);
-
 	if(tex_draw) free(tex_draw);
 	if(tex_winnertwo) free(tex_winnertwo);
 	if(tex_winnerone) free(tex_winnerone);

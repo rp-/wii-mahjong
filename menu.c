@@ -19,6 +19,8 @@
 #include "gfx/japanwhite_png.h"
 #include "gfx/japan_png.h"
 
+#include "gfx/gamenumbers_png.h"
+
 //#include "latin_map.h"
 //#include "japanese_map.h"
 
@@ -82,6 +84,9 @@
 #define TILESET_MENU 6
 #define HIGHSCORE_MENU 7
 
+//function definitions
+static void drawHighscoreMenu();
+
 static int mainhs[5][4] = {{201,199,240,56},{226,250,192,44},{192,299,256,48},{181,348,280,44},{277,395,88,48}};
 
 static int playhs[4][4] = {{43,290,168,84},{230,291,176,76},{419,289,176,84},{495,395,100,44}};
@@ -115,9 +120,11 @@ static const unsigned char japanwidths[] = {19,38,33,37,35,35,41,41,36,36,40,39,
 								42,34,16,24,26,42,41,42,41,41,40,39,39,
 								38,40,35,32,29,38,38,42,40,40,38,40};
 
+static const unsigned char numwidths[] = {10,15,16,17,15,16,16,15,16,16,10,11,6};
+
 static int curmenunum,msel=-1;
 
-static u8 *tex_menufore,*tex_menuback, *tex_letters, *tex_whiteletters, *tex_japletters, *tex_japwhiteletters, *tex_flags, *tex_languages;
+static u8 *tex_menufore,*tex_menuback, *tex_numbers, *tex_letters, *tex_whiteletters, *tex_japletters, *tex_japwhiteletters, *tex_flags, *tex_languages;
 static u8 *tex_shade,*tex_sball, *tex_uball, *tex_smalltile, *tex_plus, *tex_minus, *tex_tiles[6], *tex_bk[6], *tex_border, *tex_layout, *tex_shanghi;
 static int xsound,xmusic;
 
@@ -157,10 +164,12 @@ void initMenu() {
 
 void setLanguage() {
 	if(!tex_letters) {
-		tex_japletters=0;
-		tex_japwhiteletters=0;
 		tex_japletters=GRRLIB_LoadTexture(japan_png);
 		tex_japwhiteletters=GRRLIB_LoadTexture(japanwhite_png);
+		tex_numbers=GRRLIB_LoadTexture(gamenumbers_png);
+
+		tex_numbers=GRRLIB_LoadTexture(gamenumbers_png);
+		GRRLIB_SetFont(tex_numbers,20, 24, "1234567890:x-", 13, 1, numwidths, 0);
 
 		GRRLIB_SetFont(tex_japwhiteletters,44,48,japanese_map,13,8, japanwidths,3);
 		GRRLIB_SetFont(tex_japletters,44,48,japanese_map,13,8, japanwidths,4);
@@ -231,6 +240,7 @@ void killMenuLanguages() {
 	if(tex_japwhiteletters) free(tex_japwhiteletters);
 	if(tex_letters) free(tex_letters);
 	if(tex_whiteletters) free(tex_whiteletters);
+	if(tex_numbers) free(tex_numbers);
 }
 
 void drawMenu(WPADData *wd) {
@@ -447,10 +457,47 @@ void drawMenu(WPADData *wd) {
 		break;
 		case HIGHSCORE_MENU:
 		{
-            GRRLIB_GPrintf( 320, 27, 0xFFFFFFFF, 1, 1, ALIGN_CENTRE, CUR_FONT(true), curtext[LNG_MMENU_HISCORES]);
+		    drawHighscoreMenu();
 		}
 		break;
 	}
+}
+
+static void drawHighscoreMenu()
+{
+    GRRLIB_GPrintf( 320, 27, 0xFFFFFFFF, 1, 1, ALIGN_CENTRE, CUR_FONT(true), curtext[LNG_MMENU_HISCORES]);
+
+    int layIndex;
+    int column = 100;
+    int YOFFSET = 100;
+    int YSPACE = 90;
+    int y = 0;
+    char strTime[6];
+
+    for( layIndex = 0; layIndex < LAYOUTS; ++layIndex)
+    {
+        GRRLIB_GPrintf( column, YOFFSET + y * YSPACE, 0xFFFFFFFF, 0.6, 0.6, ALIGN_CENTRE, CUR_FONT(true), curtext[LNG_LAYOUT_DEFAULT + layIndex]);
+
+	snprintf( strTime, sizeof(strTime), "%02d:%02d", (int)(g_scores[layIndex * 2] / 60), (int)(g_scores[layIndex * 2] % 60));
+	if( g_scores[layIndex * 2] > 0)
+	{
+		GRRLIB_GPrintf( column - 90, YOFFSET + y * YSPACE + 25, 0xFFFFFFFF, 0.5, 0.5, ALIGN_LEFT, CUR_FONT(false), "SINGLE");
+		GRRLIB_GPrintf( column + 30, YOFFSET + y * YSPACE + 35, 0xFFFFFFFF, 1, 1, ALIGN_LEFT, 0, strTime);
+	}
+
+	snprintf( strTime, sizeof(strTime), "%02d:%02d", (int)(g_scores[layIndex * 2 + 1] / 60), (int)(g_scores[layIndex * 2 + 1] % 60));
+	if( g_scores[layIndex * 2 + 1] > 0)
+	{
+		GRRLIB_GPrintf( column - 90, YOFFSET + y * YSPACE + 50, 0xFFFFFFFF, 0.5, 0.5, ALIGN_LEFT, CUR_FONT(false), "COOP");
+		GRRLIB_GPrintf( column + 30, YOFFSET + y * YSPACE + 60, 0xFFFFFFFF, 1, 1, ALIGN_LEFT, 0, strTime);
+	}
+        y++;
+        if( (layIndex + 1) % 4 == 0)
+        {
+            y = 0;
+            column += 210;
+        }
+    }
 }
 
 void drawLayout(int n) {
@@ -522,7 +569,6 @@ int menuWiimote(WPADData *wd, u32 wpaddown) {
 						playClick();
 						killMainMenu();
 						return EXIT;
-						break;
 				}
 				break;
 			case PLAY_MENU :
@@ -650,12 +696,9 @@ int menuWiimote(WPADData *wd, u32 wpaddown) {
 
 			case HIGHSCORE_MENU:
 			{
-			    if(msel>-1)
-			    {
-			        playClick();
-			        killHighscoreMenu();
-			        initMainMenu();
-			    }
+                playClick();
+                killHighscoreMenu();
+                initMainMenu();
 			}
 			break;
 		}
