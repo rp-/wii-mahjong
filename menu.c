@@ -478,19 +478,20 @@ static void drawHighscoreMenu()
     {
         GRRLIB_GPrintf( column, YOFFSET + y * YSPACE, 0xFFFFFFFF, 0.6, 0.6, ALIGN_CENTRE, CUR_FONT(true), curtext[LNG_LAYOUT_DEFAULT + layIndex]);
 
-	snprintf( strTime, sizeof(strTime), "%02d:%02d", (int)(g_scores[layIndex * 2] / 60), (int)(g_scores[layIndex * 2] % 60));
-	if( g_scores[layIndex * 2] > 0)
-	{
-		GRRLIB_GPrintf( column - 90, YOFFSET + y * YSPACE + 25, 0xFFFFFFFF, 0.5, 0.5, ALIGN_LEFT, CUR_FONT(false), "SINGLE");
-		GRRLIB_GPrintf( column + 30, YOFFSET + y * YSPACE + 35, 0xFFFFFFFF, 1, 1, ALIGN_LEFT, 0, strTime);
-	}
+        snprintf( strTime, sizeof(strTime), "%02d:%02d", (int)(g_scores[layIndex * 2] / 60), (int)(g_scores[layIndex * 2] % 60));
+        if( g_scores[layIndex * 2] == 0)
+            snprintf( strTime, sizeof(strTime), "--:--");
 
-	snprintf( strTime, sizeof(strTime), "%02d:%02d", (int)(g_scores[layIndex * 2 + 1] / 60), (int)(g_scores[layIndex * 2 + 1] % 60));
-	if( g_scores[layIndex * 2 + 1] > 0)
-	{
-		GRRLIB_GPrintf( column - 90, YOFFSET + y * YSPACE + 50, 0xFFFFFFFF, 0.5, 0.5, ALIGN_LEFT, CUR_FONT(false), "COOP");
-		GRRLIB_GPrintf( column + 30, YOFFSET + y * YSPACE + 60, 0xFFFFFFFF, 1, 1, ALIGN_LEFT, 0, strTime);
-	}
+        GRRLIB_GPrintf( column - 90, YOFFSET + y * YSPACE + 25, 0xFFFFFFFF, 0.5, 0.5, ALIGN_LEFT, CUR_FONT(false), curtext[LNG_PMENU_1PLAYER]);
+        GRRLIB_GPrintf( column + 30, YOFFSET + y * YSPACE + 35, 0xFFFFFFFF, 1, 1, ALIGN_LEFT, 0, strTime);
+
+        snprintf( strTime, sizeof(strTime), "%02d:%02d", (int)(g_scores[layIndex * 2 + 1] / 60), (int)(g_scores[layIndex * 2 + 1] % 60));
+        if( g_scores[layIndex * 2 + 1] == 0)
+            snprintf( strTime, sizeof(strTime), "--:--");
+
+        GRRLIB_GPrintf( column - 90, YOFFSET + y * YSPACE + 50, 0xFFFFFFFF, 0.5, 0.5, ALIGN_LEFT, CUR_FONT(false), curtext[LNG_PMENU_2PLAYERCOOP]);
+        GRRLIB_GPrintf( column + 30, YOFFSET + y * YSPACE + 60, 0xFFFFFFFF, 1, 1, ALIGN_LEFT, 0, strTime);
+
         y++;
         if( (layIndex + 1) % 4 == 0)
         {

@@ -533,7 +533,7 @@ void drawGame(){
 			else {
 				if( totals[0] > 0) //this indicates that a new highscore was reached
 				{
-					GRRLIB_GPrintf( 30, 50, 0xFFFFFFFF, 1, 1, ALIGN_CENTRE, CUR_FONT(true), "NEW HIGHSCORE");
+					GRRLIB_GPrintf( 30, 50, 0xFFFFFFFF, 1, 1, ALIGN_LEFT, CUR_FONT(true), curtext[LNG_GAME_NEWHIGHSCORE]);
 				}
 				GRRLIB_DrawImg(186+imgx,151,252,172,tex_finished, 0, 1, 1, 255);
 
