@@ -790,7 +790,7 @@ bool checkTile(int tile) {
 				}
 				else {
 					// curently on top row
-					if(grid[col][yy-1][z]==BLANK && grid[col][yy+1][z]==PLACE) yy++;
+					if(grid[col][yy][z]==BLANK && grid[col][yy+1][z]==PLACE) yy++;
 				}
 			}
 		}
@@ -839,7 +839,7 @@ bool checkTile(int tile) {
 				}
 				else {
 					// curently on top row
-					if(grid[col][yy-1][z]==BLANK && grid[col][yy+1][z]==PLACE) yy++;
+					if(grid[col][yy][z]==BLANK && grid[col][yy+1][z]==PLACE) yy++;
 				}
 			}
 		}
