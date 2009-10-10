@@ -36,17 +36,17 @@ inline void GRRLIB_FillScreen(u32 color){
 }
 
 inline void GRRLIB_Plot(f32 x,f32 y, u32 color){
-   Vector  v[]={{x,y,0.0f}};
+   guVector  v[]={{x,y,0.0f}};
    GXColor c[]={GRRLIB_Splitu32(color)};
 
 	GRRLIB_NPlot(v,c,1);
 }
-void GRRLIB_NPlot(Vector v[],GXColor c[],long n){
+void GRRLIB_NPlot(guVector v[],GXColor c[],long n){
 	GRRLIB_GXEngine(v,c,n,GX_POINTS);
 }
 
 inline void GRRLIB_Line(f32 x1, f32 y1, f32 x2, f32 y2, u32 color){
-   Vector  v[]={{x1,y1,0.0f},{x2,y2,0.0f}};
+   guVector  v[]={{x1,y1,0.0f},{x2,y2,0.0f}};
    GXColor col = GRRLIB_Splitu32(color);
    GXColor c[]={col,col};
 
@@ -54,7 +54,7 @@ inline void GRRLIB_Line(f32 x1, f32 y1, f32 x2, f32 y2, u32 color){
 }
 
 inline void GRRLIB_Rectangle(f32 x, f32 y, f32 width, f32 height, u32 color, u8 filled){
-   Vector  v[]={{x,y,0.0f},{x+width,y,0.0f},{x+width,y+height,0.0f},{x,y+height,0.0f},{x,y,0.0f}};
+   guVector  v[]={{x,y,0.0f},{x+width,y,0.0f},{x+width,y+height,0.0f},{x,y+height,0.0f},{x,y,0.0f}};
    GXColor col = GRRLIB_Splitu32(color);
    GXColor c[]={col,col,col,col,col};
 
@@ -65,10 +65,10 @@ inline void GRRLIB_Rectangle(f32 x, f32 y, f32 width, f32 height, u32 color, u8 
 		GRRLIB_NGoneFilled(v,c,4);
 	}
 }
-void GRRLIB_NGone(Vector v[],GXColor c[],long n){
+void GRRLIB_NGone(guVector v[],GXColor c[],long n){
 	GRRLIB_GXEngine(v,c,n,GX_LINESTRIP);
 }
-void GRRLIB_NGoneFilled(Vector v[],GXColor c[],long n){
+void GRRLIB_NGoneFilled(guVector v[],GXColor c[],long n){
 	GRRLIB_GXEngine(v,c,n,GX_TRIANGLEFAN);
 }
 
@@ -201,7 +201,7 @@ inline void GRRLIB_DrawImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[],
 	height*=.5;
 	guMtxIdentity (m1);
 	guMtxScaleApply(m1,m1,scaleX,scaleY,1.0);
-	Vector axis =(Vector) {0 , 0, 1 };
+	guVector axis =(guVector) {0 , 0, 1 };
 	guMtxRotAxisDeg (m2, &axis, degrees);
 	guMtxConcat(m2,m1,m);
 
@@ -250,7 +250,7 @@ inline void GRRLIB_DrawColImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data
 	height*=.5;
 	guMtxIdentity (m1);
 	guMtxScaleApply(m1,m1,scaleX,scaleY,1.0);
-	Vector axis =(Vector) {0 , 0, 1 };
+	guVector axis =(guVector) {0 , 0, 1 };
 	guMtxRotAxisDeg (m2, &axis, degrees);
 	guMtxConcat(m2,m1,m);
 
@@ -301,7 +301,7 @@ f32 t2=1;
 	height*=.5;
 	guMtxIdentity (m1);
 	guMtxScaleApply(m1,m1,scaleX,scaleY,1.0);
-	Vector axis =(Vector) {0 , 0, 1 };
+	guVector axis =(guVector) {0 , 0, 1 };
 	guMtxRotAxisDeg (m2, &axis, degrees);
 	guMtxConcat(m2,m1,m);
 	guMtxTransApply(m,m, xpos+width,ypos+height,0);
@@ -353,7 +353,7 @@ f32 t2= ((frame    /chars_wide)+1)    /(f32)chars_high;
 
     guMtxIdentity (m1);
     guMtxScaleApply(m1,m1,scaleX,scaleY,1.0);
-    Vector axis =(Vector) {0,0,1};
+    guVector axis =(guVector) {0,0,1};
     guMtxRotAxisDeg (m2, &axis, degrees);
     guMtxConcat(m2,m1,m);
     guMtxTransApply(m,m, xpos+width,ypos+height,0);
@@ -404,7 +404,7 @@ f32 t2=1;
 	height*=.5;
 	guMtxIdentity (m1);
 	guMtxScaleApply(m1,m1,scaleX,scaleY,1.0);
-	Vector axis =(Vector) {0 , 0, 1 };
+	guVector axis =(guVector) {0 , 0, 1 };
 	guMtxRotAxisDeg (m2, &axis, degrees);
 	guMtxConcat(m2,m1,m);
 	guMtxTransApply(m,m, xpos+width,ypos+height,0);
@@ -456,7 +456,7 @@ f32 t2= ((frame    /chars_wide)+1)    /(f32)chars_high;
 
     guMtxIdentity (m1);
     guMtxScaleApply(m1,m1,scaleX,scaleY,1.0);
-    Vector axis =(Vector) {0,0,1};
+    guVector axis =(guVector) {0,0,1};
     guMtxRotAxisDeg (m2, &axis, degrees);
     guMtxConcat(m2,m1,m);
     guMtxTransApply(m,m, xpos+width,ypos+height,0);
@@ -677,7 +677,7 @@ void GRRLIB_Printf(f32 xpos, f32 ypos, u8 data[], u32 color, f32 zoom, const cha
     }
 }
 
-void GRRLIB_GXEngine(Vector v[], GXColor c[], long n,u8 fmt){
+void GRRLIB_GXEngine(guVector v[], GXColor c[], long n,u8 fmt){
    int i=0;
 
 	GX_Begin(fmt, GX_VTXFMT0,n);
