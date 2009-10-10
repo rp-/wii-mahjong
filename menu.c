@@ -259,6 +259,7 @@ void drawMenu(WPADData *wd) {
 				GRRLIB_GPrintf(320,mainhs[x][1],0xFFFFFFFF,x==0?1.15:1,1, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_MMENU_PLAY + x]);
 			}
 
+			GRRLIB_GPrintf( 10, 420, 0xFFFFFFFF, 0.5, 0.5, ALIGN_LEFT, CUR_FONT(true), VERSION_STRING);
 			break;
 		case PLAY_MENU :
 			GRRLIB_DrawImg(34,30,576,264, tex_menufore, 0, 1, 1, 255);

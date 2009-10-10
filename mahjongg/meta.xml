@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
- <app version="0.95">
+ <app version="0.96">
    <name>MahJongg Wii</name>
    <coder>rp</coder>
-   <version>0.95</version>
+   <version>0.96</version>
    <release_date>200908280000</release_date>
    <short_description>MahJongg solitaire for Wii</short_description>
    <long_description>
+v0.96 Changelog:
+* build with new devkitpro r18, libogc 1.8.0, libfat 1.0.5
+* fix array out of bounds (thx to new gcc)
+* add printing version number in the main menu
+
 v0.95 Changelog:
 * basic highscores for singleplayer and coop
 * 6 new layouts
@@ -15,7 +20,7 @@ v0.95 Changelog:
 * fix crash if you turn of your wii while in menu
 * widescreen option is now set when loading the game
 * config is saved within the boot.dol folder
-* lot of cleanup of the code
+* code cleanup
 
 Known issues:
 * all translations except english and german are missing
@@ -45,7 +50,7 @@ SFX
 Versus mode characterisations by Banjo Fett
 Tile click SFX by Partners in Rhyme,
 Tile pair selected SFX by Chris,
-Tile pair mismatch SFX by Public Domain 
+Tile pair mismatch SFX by Public Domain
 
 Testing by Cashman
 
@@ -62,7 +67,7 @@ Portuguese by Yod4z, Banjo Fett and CashMan
 Hungarian by Ezmegaz
 Finnish by Tubelinus
 Swedish by Tubelinus and noONE
-Danish by Buffstricker and Jedicommando 
+Danish by Buffstricker and Jedicommando
 Norwegian by Raschi
 
 Libs
