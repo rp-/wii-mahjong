@@ -1338,7 +1338,7 @@ void removeMatched(int player,int s1, int s2) {
 
 static bool checkAndSaveHighscore()
 {
-    bool saved;
+    bool saved = false;
     if( g_scores[opt_layout * 2 + gamemode - 1] > 0)
     {
         if( endTime < g_scores[opt_layout * 2 + gamemode - 1] )
