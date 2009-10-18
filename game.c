@@ -1122,7 +1122,7 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 
 		selectProcessing(wd_one, 0);
 
-		return false;
+	//	return false;
 	}
 
 	if(gamemode!=ONE_PLAYER_GAME && btns_two & WPAD_BUTTON_A) {
