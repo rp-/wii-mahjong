@@ -80,6 +80,91 @@
 #define GAME_NOMORE 5
 #define GAME_BOARDINIT 6
 
+// static functions
+static void setLayout(int laynum);
+
+static void initGrid();
+
+static void resetToPlaces();
+
+static void checkSelectable();
+
+static bool isSelectable(int x, int y, int z);
+
+static bool isHigher(char x,char y,char z);
+
+static void setupGame();
+
+//void shufflePieces(int shuffles);
+
+static void mixPairs(int shuffles);
+
+static void placeTilePair();
+
+static void checkAndSaveGrid();
+
+static bool checkWithoutTile1(int tile1, int tile2);
+
+static void placeRemainingtiles();
+
+static int getTile();
+
+static bool checkTile(int tile);
+
+static bool isCovered(int x,int y,int z);
+
+static void drawBoard();
+
+static void drawTime();
+
+static void drawMatches();
+
+static void drawScores();
+
+static void drawTilesLeft();
+
+static void drawPauseIcon();
+
+static void drawHintIcon();
+
+static void drawRichTile(f32 xpos, f32 ypos, unsigned char tile,f32 scale,u8 alpha);
+
+static void selectProcessing(WPADData *wd, int player);
+
+static void removeMatched(int player,int s1, int s2);
+
+static void finishGame();
+
+static bool isSameTile(int s1, int s2);
+
+static bool selectTile(f32 x, f32 y,int selnum);
+
+static bool selectExactTile(int x, int y, int z, int selnum);
+
+static void removeTile(int selnum);
+
+static void clearSelected();
+
+static bool checkMatch();
+
+static int calcScore(int player);
+
+static bool goesLeft();
+
+static void findHint();
+
+static void compressTiles();
+
+static char realTileNum(char tileNum);
+
+static void setupFade(int n);
+
+static void drawStatistics();
+static void drawUndoIcon();
+static void undo();
+static void storeUndo();
+
+//variables
 static u8 *tex_tiles, *tex_clock, *tex_matches, *tex_pause, *tex_pauseover, *tex_paused, *tex_finished;
 static u8 *tex_hint, *tex_hintover, *tex_playerone, *tex_playertwo, *tex_winnerone, *tex_winnertwo, *tex_draw, *tex_nomorematches;
 static u8 *tex_undo, *tex_undoover;
@@ -217,11 +302,11 @@ void initGame(int gm) {
 	setupGame();
 }
 
-void setLayout(int layoutNum) {
+static void setLayout(int layoutNum) {
 	mtl = (u8 *)layouts[layoutNum];
 }
 
-void initGrid() {
+static void initGrid() {
 	int l,x,y,z,pos=0;
 
 	// clear the grid
@@ -239,7 +324,7 @@ void initGrid() {
 	}
 }
 
-void resetToPlaces() {
+static void resetToPlaces() {
 	int l,x,y,z;
 	tilesToPlace=0;
 	for(l=0;l<MAX_TILES;l++) {
@@ -253,7 +338,7 @@ void resetToPlaces() {
 	}
 }
 
-void checkSelectable() {
+static void checkSelectable() {
 	int x,y,z;
 	for(x=0;x<MAX_TILES;++x) selectable[x]=false;
 
@@ -268,7 +353,7 @@ void checkSelectable() {
 	}
 }
 
-bool isSelectable(int x, int y, int z) {
+static bool isSelectable(int x, int y, int z) {
 	// first check if there are any overlapping from the row above
 	if(z<(MAX_LAYERS-1)) {
 		if(isHigher(x,y,z+1)) {
@@ -309,7 +394,7 @@ bool isSelectable(int x, int y, int z) {
 	return false;
 }
 
-bool isHigher(char x,char y,char z) {
+static bool isHigher(char x,char y,char z) {
 	int r,c,tot=0;
 	int x1=x-1,x2=x+2,y1=y-1,y2=y+2;
 	if(x1<0) x1=0;
@@ -344,7 +429,7 @@ void killGame() {
 	if(tex_gameback) free(tex_gameback);
 }
 
-void setupGame() {
+static void setupGame() {
 	srand(time(NULL));
 
 	// This sets up the array of tiles so that they correspond to the number in the graphical tile set
@@ -404,7 +489,7 @@ void setupGame() {
 	SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 11025, 40,&gong_raw, gong_raw_size, 0, opt_sound, NULL);
 }
 
-void mixPairs(int shuffles) {
+static void mixPairs(int shuffles) {
 	int x,t1,t2;
 	unsigned char dummy;
 	for(x=0;x<shuffles;x++) {
@@ -426,6 +511,11 @@ void mixPairs(int shuffles) {
 		tiles[t1+1]=tiles[t2+1];
 		tiles[t2+1]=dummy;
 	}
+}
+
+static void drawStatistics()
+{
+
 }
 
 void drawGame(){
@@ -507,6 +597,7 @@ void drawGame(){
 
 			break;
 		case GAME_FINISHED :
+		{
 			GRRLIB_FillScreen(0xAA000000);
 
 			if(gamemode==TWO_PLAYER_VERSUS) {
@@ -537,6 +628,8 @@ void drawGame(){
 				}
 				GRRLIB_DrawImg(186+imgx,151,252,172,tex_finished, 0, 1, 1, 255);
 
+				drawStatistics();
+
 				strlen = GRRLIB_GetStringWidth(CUR_FONT(false), curtext[LNG_GAME_FINISHED]);
 				if(strlen>238) {
 					f32 zoom = (float)238/(float)strlen;
@@ -556,8 +649,10 @@ void drawGame(){
 			GRRLIB_GPrintf(randomgamepos[0], randomgamepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(randomgameover),curtext[LNG_GAME_RANDOMLAYOUT]);
 
 			GRRLIB_GPrintf(menupos[0], menupos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(menuover),curtext[LNG_GAME_MENU]);
-			break;
+		}
+		break;
 		case GAME_NOMORE :
+		{
 			GRRLIB_FillScreen(0xAA000000);
 			GRRLIB_DrawImg(170+imgx,149,284,160,tex_nomorematches, 0, 1, 1, 255);
 
@@ -570,6 +665,8 @@ void drawGame(){
 				GRRLIB_GPrintf(170+36+119+imgx,250,0xFFEEEEBB,1,0.8, ALIGN_CENTRE,CUR_FONT(false),curtext[LNG_GAME_NOMORETILES]);
 			}
 
+			drawStatistics();
+
 			if(imgx>0 && imgacc>0) {
 				imgx-=imgacc;
 				imgacc--;
@@ -579,11 +676,12 @@ void drawGame(){
 
 			GRRLIB_GPrintf(menupos[0], menupos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(menuover),curtext[LNG_GAME_MENU]);
 			GRRLIB_GPrintf(shufflepos[0], shufflepos[1],0xFFFFFFFF,1,1, ALIGN_LEFT,CUR_FONT(shuffleover),curtext[LNG_GAME_SHUFFLE]);
-			break;
+		}
+		break;
 	}
 }
 
-void placeTilePair() {
+static void placeTilePair() {
 	int tile1 = getTile();
 	int retries=0;
 	while(!checkTile(tile1) && retries++ < tilesLeft*8) {
@@ -649,7 +747,7 @@ void placeTilePair() {
 
 // this function checks whether this is the best attempt to place the tiles,
 // if it is then save the grid in case we cannot competely place the tiles at all
-void checkAndSaveGrid() {
+static void checkAndSaveGrid() {
 	if(tilesToPlace>=bestGuessNum) return;
 
 	bestGuessNum=tilesToPlace;
@@ -664,7 +762,7 @@ void checkAndSaveGrid() {
 // this function is used when we have placed the first tile of a pair and need to check
 // whether tile2 could still be placed if tile1 was not there to make sure that we are
 // not placing two next to each other that are not accessible
-bool checkWithoutTile1(int tile1, int tile2) {
+static bool checkWithoutTile1(int tile1, int tile2) {
 	grid[mtl[tile1*3]][mtl[tile1*3+1]][mtl[tile1*3+2]]=PLACE;
 
 	bool res = checkTile(tile2);
@@ -676,7 +774,7 @@ bool checkWithoutTile1(int tile1, int tile2) {
 
 // This function is used to place all remaining tiles randomly to complete a uncompletable shuffle
 // this can be resolved later when there are less tiles left
-void placeRemainingtiles() {
+static void placeRemainingtiles() {
 	int x,xe;
 
 	// set grid up with the best guess so far
@@ -694,7 +792,7 @@ void placeRemainingtiles() {
 	}
 }
 
-int getTile() {
+static int getTile() {
 	int tile=rand()%MAX_TILES;
 	int x=mtl[tile*3];
 	int y=mtl[tile*3+1];
@@ -711,7 +809,7 @@ int getTile() {
 }
 
 // This checks whether this tile can be placed
-bool checkTile(int tile) {
+static bool checkTile(int tile) {
 	int x=mtl[tile*3];
 	int y=mtl[tile*3+1];
 	int z=mtl[tile*3+2];
@@ -852,7 +950,7 @@ bool checkTile(int tile) {
 }
 
 // This checks out whether there the tile has a sound fondation from th elayer below
-bool isCovered(int x,int y,int z) {
+static bool isCovered(int x,int y,int z) {
 	// check directly below
 	if(grid[x][y][z-1]<BLANK) return true;
 
@@ -886,7 +984,7 @@ bool isCovered(int x,int y,int z) {
 	return false;
 }
 
-void drawBoard() {
+static void drawBoard() {
 	int x,y,z,c,l;
 	static int colind=0,dir=1;
 	bool selected=false,colchange=false;
@@ -926,7 +1024,7 @@ void drawBoard() {
 	}
 }
 
-void drawTime() {
+static void drawTime() {
 	GRRLIB_DrawImg(588, 31, 40, 44, tex_clock, 0, 1, 1, 255);
 	time_t curTime = time(NULL);
 	time_t difTime;
@@ -940,16 +1038,16 @@ void drawTime() {
 	GRRLIB_GPrintf(602,72,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,str);
 }
 
-void drawMatches() {
+static void drawMatches() {
 	GRRLIB_DrawImg( 578, 103, 60, 44, tex_matches, 0, 1, 1, 255);
 	GRRLIB_GPrintf( 608,146,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%02d",matches);
 }
 
-void drawTilesLeft() {
+static void drawTilesLeft() {
     GRRLIB_GPrintf( 608, 176, 0xFFFFFFFF, 1, 1, ALIGN_CENTRE, 0, "%03d", tilesLeft);
 }
 
-void drawScores() {
+static void drawScores() {
 	GRRLIB_DrawImg(577, 30, 60, 44, tex_playerone, 0, 1, 1, 255);
 	GRRLIB_GPrintf(609,74,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%05d",score[0]);
 
@@ -957,19 +1055,19 @@ void drawScores() {
 	GRRLIB_GPrintf(609,159,0xFFFFFFFF,1,1,ALIGN_CENTRE,0,"%05d",score[1]);
 }
 
-void drawPauseIcon() {
+static void drawPauseIcon() {
 	GRRLIB_DrawImg(pausepos[0], pausepos[1],pausepos[2],pausepos[3],pauseover?tex_pauseover:tex_pause, 0, 1, 1, 255);
 }
 
-void drawHintIcon() {
+static void drawHintIcon() {
 	GRRLIB_DrawImg(hintpos[0], hintpos[1],hintpos[2],hintpos[3],hintover?tex_hintover:tex_hint, 0, 1, 1, 255);
 }
 
-void drawUndoIcon() {
+static void drawUndoIcon() {
 	GRRLIB_DrawImg(undopos[0], undopos[1],undopos[2],undopos[3],undoover?tex_undoover:tex_undo, 0, 1, 1, 255);
 }
 
-void drawRichTile(f32 xpos, f32 ypos, unsigned char tile,f32 scale,u8 alpha) {
+static void drawRichTile(f32 xpos, f32 ypos, unsigned char tile,f32 scale,u8 alpha) {
 	GRRLIB_DrawGTile(xpos,ypos,44,60,tex_tiles,21,2,0,scale,scale,0x00FFFFFF+ 0x01000000*alpha,tile);
 }
 
@@ -1150,7 +1248,7 @@ bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two)
 	return false;
 }
 
-void selectProcessing(WPADData *wd, int player) {
+static void selectProcessing(WPADData *wd, int player) {
 	int selnum = player*2+(sel[player*2+0].type==SEL_NONE?0:1);
 
 	// other represents the first possible selection of the other player
@@ -1227,7 +1325,7 @@ void selectProcessing(WPADData *wd, int player) {
 	}
 }
 
-void removeMatched(int player,int s1, int s2) {
+static void removeMatched(int player,int s1, int s2) {
 	int x;
 	if(gamemode==TWO_PLAYER_VERSUS) {
 		multi[player]++;
@@ -1357,7 +1455,7 @@ static bool checkAndSaveHighscore()
     return saved;
 }
 
-void finishGame() {
+static void finishGame() {
 	endTime=time(NULL)-startTime;
 	game_state=GAME_FINISHED;
 	imgx=300;
@@ -1385,11 +1483,11 @@ void finishGame() {
 	}
 }
 
-bool isSameTile(int s1, int s2) {
+static bool isSameTile(int s1, int s2) {
 	return sel[s1].x==sel[s2].x && sel[s1].y==sel[s2].y && sel[s1].z==sel[s2].z;
 }
 
-bool selectTile(f32 x, f32 y,int selnum) {
+static bool selectTile(f32 x, f32 y,int selnum) {
 	int tx,ty,z;
 	for(z=MAX_LAYERS-1;z>=0;z--) {
 		tx = (x-STARTX +(z*(TILESIDE))) / (TILEWIDTH/2);
@@ -1413,7 +1511,7 @@ bool selectTile(f32 x, f32 y,int selnum) {
 	return false;
 }
 
-bool selectExactTile(int x, int y, int z, int selnum) {
+static bool selectExactTile(int x, int y, int z, int selnum) {
 	if(x>=0 && y>=0 && grid[x][y][z]!=BLANK && selectable[grid[x][y][z]]) {
 		sel[selnum].type = SEL_TILE;
 		sel[selnum].tile=tiles[grid[x][y][z]];
@@ -1425,7 +1523,7 @@ bool selectExactTile(int x, int y, int z, int selnum) {
 	return false;
 }
 
-void storeUndo( int sel1, int sel2)
+static void storeUndo( int sel1, int sel2)
 {
     undoTiles[0].x = sel[sel1].x;
     undoTiles[0].y = sel[sel1].y;
@@ -1439,7 +1537,7 @@ void storeUndo( int sel1, int sel2)
     undoTiles[1].type = tiles[undoTiles[1].tile];
 }
 
-void undo()
+static void undo()
 {
     if( undoTiles[0].x > 0)
     {
@@ -1459,7 +1557,7 @@ void undo()
     undoTiles[0].x = -1; //disable until next remove of a tile
 }
 
-void removeTile(int selnum) {
+static void removeTile(int selnum) {
 
 	tiles[grid[sel[selnum].x][sel[selnum].y][sel[selnum].z]]=BLANK;
 	selectable[grid[sel[selnum].x][sel[selnum].y][sel[selnum].z]]=false;
@@ -1468,19 +1566,19 @@ void removeTile(int selnum) {
 	clearSelected(selnum);
 }
 
-void clearSelected(selnum) {
+static void clearSelected(selnum) {
 	sel[selnum].type=SEL_NONE;
 	sel[selnum].tile=BLANK;
 }
 
-bool checkMatch(int selnum1, int selnum2) {
+static bool checkMatch(int selnum1, int selnum2) {
 	if(realTileNum(sel[selnum1].tile)==realTileNum(sel[selnum2].tile))
 		return true;
 
 	return false;
 }
 
-int calcScore(int player) {
+static int calcScore(int player) {
 	int tile = realTileNum(sel[player*2].tile);
 
 	// normal tiles only five points
@@ -1496,7 +1594,7 @@ int calcScore(int player) {
 	return 10*multi[player];
 }
 
-bool goesLeft() {
+static bool goesLeft() {
 	int x;
 	for(x=0;x<36;x++) {
 		openTiles[x]=0;
@@ -1517,7 +1615,7 @@ bool goesLeft() {
 	return false;
 }
 
-void findHint() {
+static void findHint() {
 	int tn,x,y,z;
 
 	if(!goesLeft()) {
@@ -1555,7 +1653,7 @@ void findHint() {
 
 }
 
-void compressTiles() {
+static void compressTiles() {
 	int x,y;
 	for(x=0;x<tilesLeft;x+=2) {
 		// if both tiles are blank get a pair for further away
@@ -1596,14 +1694,14 @@ void compressTiles() {
 
 }
 
-char realTileNum(char tileNum) {
+static char realTileNum(char tileNum) {
 	if(tileNum<34)
 		return tileNum;
 
 	return (tileNum-34)/4+34;
 }
 
-void setupFade(int n) {
+static void setupFade(int n) {
 	fade[n].tile=sel[n].tile;
 	fade[n].x=TILEX(sel[n].x,sel[n].z);
 	fade[n].y=TILEY(sel[n].y,sel[n].z);
