@@ -87,6 +87,49 @@
 //function definitions
 static void drawHighscoreMenu();
 
+static void initMainMenu();
+
+static void killMainMenu();
+
+static void initPlayMenu();
+
+static void killPlayMenu();
+
+static void initSoundMenu();
+
+static void killSoundMenu();
+
+static void initOptionMenu();
+
+static void initLangMenu();
+
+static void killLangMenu();
+
+static void initLayoutMenu();
+
+static void killLayoutMenu();
+
+static void initTilesetMenu();
+
+static void killTilesetMenu();
+
+static void initHighscoreMenu();
+
+static void killHighscoreMenu();
+
+static void playWrong();
+
+static void playClick();
+
+static void checkSelected(WPADData *wd);
+
+static void setLanguage();
+
+static void killMenu();
+
+static void drawLayout(int n);
+
+//variable definitions
 static int mainhs[5][4] = {{201,199,240,56},{226,250,192,44},{192,299,256,48},{181,348,280,44},{277,395,88,48}};
 
 static int playhs[4][4] = {{43,290,168,84},{230,291,176,76},{419,289,176,84},{495,395,100,44}};
@@ -162,7 +205,7 @@ void initMenu() {
 	}
 }
 
-void setLanguage() {
+static void setLanguage() {
 	if(!tex_letters) {
 		tex_japletters=GRRLIB_LoadTexture(japan_png);
 		tex_japwhiteletters=GRRLIB_LoadTexture(japanwhite_png);
@@ -230,7 +273,7 @@ void setLanguage() {
 	}
 }
 
-void killMenu() {
+static void killMenu() {
 	if(tex_menuback) free(tex_menuback);
 	if(tex_menufore) free(tex_menufore);
 }
@@ -296,6 +339,7 @@ void drawMenu(WPADData *wd) {
 			GRRLIB_DrawImg(-9, 30, 640, 420, tex_menufore, 0, 1, 1, 255);
 
 			for(x=0;x<6;x++) {
+				// check if on/off entry
 				if(x==4 || x==2 || x==5) {
 					char buffer[60];
 
@@ -502,7 +546,7 @@ static void drawHighscoreMenu()
     }
 }
 
-void drawLayout(int n) {
+static void drawLayout(int n) {
 	unsigned char grid[MAX_WIDTH][MAX_HEIGHT][MAX_LAYERS];
 	int x,y,z,c,l,pos=0;
 	int coord = n % 6;
@@ -780,7 +824,7 @@ int menuWiimote(WPADData *wd, u32 wpaddown) {
 	return NOTHING;
 }
 
-void checkSelected(WPADData *wd) {
+static void checkSelected(WPADData *wd) {
 	int x;
 	switch(curmenunum) {
 		case MAIN_MENU :
@@ -883,7 +927,7 @@ void checkSelected(WPADData *wd) {
 	msel=-1;
 }
 
-void initMainMenu() {
+static void initMainMenu() {
 	int x,strsize;
 
 	tex_menuback=GRRLIB_LoadJPG(mainback_jpg, mainback_jpg_size);
@@ -901,7 +945,7 @@ void initMainMenu() {
 	curmenunum = MAIN_MENU;
 }
 
-void killMainMenu() {
+static void killMainMenu() {
 	if(tex_menuback) free(tex_menuback);
 	if(tex_menufore) free(tex_menufore);
 
@@ -909,7 +953,7 @@ void killMainMenu() {
 }
 
 
-void initPlayMenu() {
+static void initPlayMenu() {
 	int x;
 
 	tex_menuback=GRRLIB_LoadJPG(playback_jpg, playback_jpg_size);
@@ -930,13 +974,13 @@ void initPlayMenu() {
 	curmenunum = PLAY_MENU;
 }
 
-void killPlayMenu() {
+static void killPlayMenu() {
 	killMenu();
 
 	if(tex_shade) free(tex_shade);
 }
 
-void initSoundMenu() {
+static void initSoundMenu() {
 	tex_menuback=GRRLIB_LoadJPG(soundback_jpg, soundback_jpg_size);
 	tex_menufore=GRRLIB_LoadTexture(soundfore_png);
 
@@ -950,14 +994,14 @@ void initSoundMenu() {
 	curmenunum = SOUND_MENU;
 }
 
-void killSoundMenu() {
+static void killSoundMenu() {
 	killMenu();
 
 	if(tex_uball) free(tex_uball);
 	if(tex_sball) free(tex_sball);
 }
 
-void initOptionMenu() {
+static void initOptionMenu() {
 	int x,strsize;
 
 	tex_menuback=GRRLIB_LoadJPG(optionsback_jpg, optionsback_jpg_size);
@@ -976,7 +1020,7 @@ void initOptionMenu() {
 	curmenunum = OPTIONS_MENU;
 }
 
-void initLangMenu() {
+static void initLangMenu() {
 //    curtext[0] = 0;
 	tex_menuback=GRRLIB_LoadJPG(mainback_jpg, mainback_jpg_size);
 	tex_menufore=GRRLIB_LoadTexture(mainfore_png);
@@ -991,7 +1035,7 @@ void initLangMenu() {
 	curmenunum = LANG_MENU;
 }
 
-void killLangMenu() {
+static void killLangMenu() {
 	killMenu();
 
 	if(tex_flags) free(tex_flags);
@@ -1001,7 +1045,7 @@ void killLangMenu() {
 	if(tex_minus) free(tex_minus);
 }
 
-void initLayoutMenu() {
+static void initLayoutMenu() {
 	tex_menuback=GRRLIB_LoadJPG(playback_jpg, playback_jpg_size);
 	tex_layout=GRRLIB_LoadTexture(layoutback_png);
 	tex_smalltile=GRRLIB_LoadTexture(smalltile_png);
@@ -1013,7 +1057,7 @@ void initLayoutMenu() {
 	curmenunum = LAYOUT_MENU;
 }
 
-void killLayoutMenu() {
+static void killLayoutMenu() {
 	if(tex_menuback) free(tex_menuback);
 	if(tex_layout) free(tex_layout);
 	if(tex_smalltile) free(tex_smalltile);
@@ -1022,7 +1066,7 @@ void killLayoutMenu() {
 	if(tex_minus) free(tex_minus);
 }
 
-void initTilesetMenu() {
+static void initTilesetMenu() {
 	tex_menuback=GRRLIB_LoadJPG(playback_jpg, playback_jpg_size);
 	tex_layout=GRRLIB_LoadTexture(layoutback_png);
 	tex_border=GRRLIB_LoadTexture(border_png);
@@ -1045,7 +1089,7 @@ void initTilesetMenu() {
 	curmenunum = TILESET_MENU;
 }
 
-void killTilesetMenu() {
+static void killTilesetMenu() {
 	if(tex_menuback) free(tex_menuback);
 
 	if(tex_layout) free(tex_layout);
@@ -1066,23 +1110,23 @@ void killTilesetMenu() {
 	if(tex_bk[5]) free(tex_bk[5]);
 }
 
-void initHighscoreMenu()
+static void initHighscoreMenu()
 {
     tex_menuback=GRRLIB_LoadJPG(mainback_jpg, mainback_jpg_size);
     curmenunum = HIGHSCORE_MENU;
 }
 
-void killHighscoreMenu()
+static void killHighscoreMenu()
 {
     if( tex_menuback) free(tex_menuback);
 }
 
-void playWrong() {
+static void playWrong() {
     if( opt_sound > 0)
         SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
 }
 
-void playClick() {
+static void playClick() {
     if( opt_sound > 0)
         SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 36000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
 }
