@@ -796,6 +796,10 @@ static void placeRemainingtiles() {
 	}
 }
 
+/**
+ * Returns a tile which isn't placed yet
+ * @return tile index in the mahjongg layout array
+ */
 static int getTile() {
 	int tile;
 	int x, y, z;
@@ -812,7 +816,10 @@ static int getTile() {
 	return tile;
 }
 
-// This checks whether this tile can be placed
+/**
+ * This checks whether this tile can be placed.
+ * @return true if tile can be placed.
+ */
 static bool checkTile(int tile) {
 	int x=mtl[tile*3];
 	int y=mtl[tile*3+1];
