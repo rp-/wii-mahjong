@@ -682,11 +682,13 @@ void drawGame(){
 }
 
 static void placeTilePair() {
-	int tile1 = getTile();
+	int tile1;
 	int retries=0;
-	while(!checkTile(tile1) && retries++ < tilesLeft*8) {
+	do
+	{
 		tile1 = getTile();
-	}
+	} while(!checkTile(tile1) && retries++ < tilesLeft*8);
+
 	if(retries>=tilesLeft*8) {
 		shuffleretries++;
 		if(shuffleretries>7) {
@@ -714,11 +716,13 @@ static void placeTilePair() {
 	grid[mtl[tile1*3]][mtl[tile1*3+1]][mtl[tile1*3+2]]=--tilesToPlace;
 
 	// find spare tile 2
-	int tile2 = getTile();
+	int tile2;
 	retries=0;
-	while((!checkTile(tile2) || tile1==tile2 || !checkWithoutTile1(tile1,tile2)) && retries++ < tilesLeft*8) {
+	do
+	{
 		tile2 = getTile();
-	}
+	} while((!checkTile(tile2) || tile1==tile2 || !checkWithoutTile1(tile1,tile2)) && retries++ < tilesLeft*8);
+
 	if(retries>=tilesLeft*8) {
 		shuffleretries++;
 		if(shuffleretries>7) {
@@ -793,18 +797,18 @@ static void placeRemainingtiles() {
 }
 
 static int getTile() {
-	int tile=rand()%MAX_TILES;
-	int x=mtl[tile*3];
-	int y=mtl[tile*3+1];
-	int z=mtl[tile*3+2];
+	int tile;
+	int x, y, z;
 
 	// get tiles until we find one that we can place
-	while(grid[x][y][z]!=PLACE) {
-		tile=rand()%MAX_TILES;
+	do
+	{
+		tile=rand() % MAX_TILES;
 		x=mtl[tile*3];
 		y=mtl[tile*3+1];
 		z=mtl[tile*3+2];
-	}
+	} while (grid[x][y][z] != PLACE);
+
 	return tile;
 }
 
