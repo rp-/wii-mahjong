@@ -87,8 +87,18 @@ static void initGrid();
 
 static void resetToPlaces();
 
+/**
+ * Check all tiles if they are selectable.
+ * The bool selectable[tile] array will be set accordingly
+ */
 static void checkSelectable();
 
+/**
+ * Check if given coordinates are selectable.
+ * @param x X coordinate.
+ * @param y Y coordinate.
+ * @param z Z coordinate.
+ */
 static bool isSelectable(int x, int y, int z);
 
 static bool isHigher(char x,char y,char z);
@@ -101,16 +111,43 @@ static void mixPairs(int shuffles);
 
 static void placeTilePair();
 
+/**
+ * This function checks whether this is the best attempt to place the tiles,
+ * if it is then save the grid in case we cannot competely place the tiles at all
+ */
 static void checkAndSaveGrid();
-
-static bool checkWithoutTile1(int tile1, int tile2);
 
 static void placeRemainingtiles();
 
+/**
+ * Returns a tile which isn't placed yet
+ * @return tile index in the mahjongg layout array
+ */
 static int getTile();
 
+/**
+ * This checks whether this tile can be placed.
+ * @param tile Tile index to check.
+ * @return true if tile can be placed.
+ */
 static bool checkTile(int tile);
 
+/**
+ * This function is used when we have placed the first tile of a pair and need to check
+ * whether tile2 could still be placed if tile1 was not there to make sure that we are
+ * not placing two next to each other that are not accessible
+ * @param tile1 Tile index to ignore.
+ * @param tile2 Tile to be checked.
+ * @return True if tiles can be placed.
+ */
+static bool checkWithoutTile1(int tile1, int tile2);
+
+/**
+ * This checks out whether the tile has a foundation from the layer below.
+ * @param x X coordinate.
+ * @param y Y coordinate.
+ * @param z Z coordinate.
+ */
 static bool isCovered(int x,int y,int z);
 
 static void drawBoard();
@@ -749,8 +786,6 @@ static void placeTilePair() {
 	grid[mtl[tile2*3]][mtl[tile2*3+1]][mtl[tile2*3+2]]=--tilesToPlace;
 }
 
-// this function checks whether this is the best attempt to place the tiles,
-// if it is then save the grid in case we cannot competely place the tiles at all
 static void checkAndSaveGrid() {
 	if(tilesToPlace>=bestGuessNum) return;
 
@@ -761,19 +796,6 @@ static void checkAndSaveGrid() {
 	for(x=0;x<MAX_TILES;x++) {
 		bestGuess[x]=grid[mtl[x*3]][mtl[x*3+1]][mtl[x*3+2]];
 	}
-}
-
-// this function is used when we have placed the first tile of a pair and need to check
-// whether tile2 could still be placed if tile1 was not there to make sure that we are
-// not placing two next to each other that are not accessible
-static bool checkWithoutTile1(int tile1, int tile2) {
-	grid[mtl[tile1*3]][mtl[tile1*3+1]][mtl[tile1*3+2]]=PLACE;
-
-	bool res = checkTile(tile2);
-
-	grid[mtl[tile1*3]][mtl[tile1*3+1]][mtl[tile1*3+2]]=tilesToPlace;
-
-	return res;
 }
 
 // This function is used to place all remaining tiles randomly to complete a uncompletable shuffle
@@ -796,10 +818,6 @@ static void placeRemainingtiles() {
 	}
 }
 
-/**
- * Returns a tile which isn't placed yet
- * @return tile index in the mahjongg layout array
- */
 static int getTile() {
 	int tile;
 	int x, y, z;
@@ -816,10 +834,6 @@ static int getTile() {
 	return tile;
 }
 
-/**
- * This checks whether this tile can be placed.
- * @return true if tile can be placed.
- */
 static bool checkTile(int tile) {
 	int x=mtl[tile*3];
 	int y=mtl[tile*3+1];
@@ -898,7 +912,7 @@ static bool checkTile(int tile) {
 					if(grid[col][yy-1][z]==BLANK && grid[col][yy+1][z]==PLACE) yy++;
 				}
 				else {
-					// curently on top row
+					// currently on top row
 					if(grid[col][yy][z]==BLANK && grid[col][yy+1][z]==PLACE) yy++;
 				}
 			}
@@ -960,7 +974,16 @@ static bool checkTile(int tile) {
 	return true;
 }
 
-// This checks out whether there the tile has a sound fondation from th elayer below
+static bool checkWithoutTile1(int tile1, int tile2) {
+	grid[mtl[tile1*3]][mtl[tile1*3+1]][mtl[tile1*3+2]]=PLACE;
+
+	bool res = checkTile(tile2);
+
+	grid[mtl[tile1*3]][mtl[tile1*3+1]][mtl[tile1*3+2]]=tilesToPlace;
+
+	return res;
+}
+
 static bool isCovered(int x,int y,int z) {
 	// check directly below
 	if(grid[x][y][z-1]<BLANK) return true;
