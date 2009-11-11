@@ -530,15 +530,13 @@ static void mixPairs(int shuffles) {
 	int x,t1,t2;
 	unsigned char dummy;
 	for(x=0;x<shuffles;x++) {
-		t1=((rand()%tilesLeft)/2)*2;
-		while(tiles[t1]==BLANK) {
+		do {
 			t1=((rand()%tilesLeft)/2)*2;
-		}
+		} while(tiles[t1]==BLANK);
 
-		t2=((rand()%tilesLeft)/2)*2;
-		while(tiles[t2]==BLANK || t1==t2) {
+		do {
 			t2=((rand()%tilesLeft)/2)*2;
-		}
+		} while(tiles[t2]==BLANK || t1==t2);
 
 		dummy=tiles[t1];
 		tiles[t1]=tiles[t2];
