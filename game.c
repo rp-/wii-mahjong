@@ -898,10 +898,7 @@ static bool checkTile(int tile) {
 			if(blank==0) tilebreak=true;
 
 			// see if line moves up or down or finishes
-			if(grid[col][yy][z]==PLACE) {
-				// do nothing
-			}
-			else {
+			if(grid[col][yy][z] != PLACE) {
 				if(yy>0) {
 					if(grid[col][yy-1][z]==PLACE && grid[col][yy+1][z]==PLACE) tileplace=true;
 					else
