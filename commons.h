@@ -1,7 +1,7 @@
 #ifndef _commons_h_
 #define _commons_h_
 
-#define VERSION_STRING "V097"
+#define VERSION_STRING "V098"
 
 #define MUSIC_BAR 2000
 #define SOUND_BAR 3000

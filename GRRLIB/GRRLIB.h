@@ -15,9 +15,11 @@
 #include <gccore.h>
 #include <fat.h>
 
-#include "../lib/libpng/pngu/pngu.h"
+// FIXME: #include "../lib/libpng/pngu/pngu.h"
+#include <pngu.h>
 #undef boolean
-#include "../lib/libjpeg/jpeglib.h"
+//#include "../lib/libjpeg/jpeglib.h"
+#include <jpeglib.h>
 
 #define ALIGN_LEFT 1
 #define ALIGN_CENTRE 2

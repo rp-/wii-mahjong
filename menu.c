@@ -6,8 +6,9 @@
 #include <stdio.h>
 #include <string.h>
 
+// FIXME:#include "lib/libpng/pngu/pngu.h"
+#include <pngu.h>
 #include "GRRLIB/GRRLIB.h"
-#include "lib/libpng/pngu/pngu.h"
 #include "asndlib.h"       // sound library
 
 #include "commons.h"

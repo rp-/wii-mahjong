@@ -31,7 +31,7 @@ typedef struct font {
 
 font fonts[5];
 
-inline void GRRLIB_FillScreen(u32 color){
+/* inline */void GRRLIB_FillScreen(u32 color){
 	GRRLIB_Rectangle(-40, -40, 680,520, color, 1);
 }
 
@@ -126,7 +126,8 @@ extern void *GRRLIB_LoadJPG(const unsigned char *src, unsigned int size) {
 	cinfo.progress = NULL;
 
 	/* Set the source buffer */
-	jpeg_memory_src(&cinfo, src, size);
+	// FIXME: jpeg_memory_src(&cinfo, src, size);
+	jpeg_mem_src(&cinfo, src, size);
 
 	/* Read the default header information */
 	jpeg_read_header(&cinfo, TRUE);
@@ -176,17 +177,19 @@ u8 * GRRLIB_LoadTexture(const unsigned char my_png[]) {
    PNGUPROP imgProp;
    IMGCTX ctx;
    void *my_texture;
+   int width, height;
 
    	ctx = PNGU_SelectImageFromBuffer(my_png);
 	PNGU_GetImageProperties (ctx, &imgProp);
 	my_texture = memalign (32, imgProp.imgWidth * imgProp.imgHeight * 4);
-	PNGU_DecodeTo4x4RGBA8 (ctx, imgProp.imgWidth, imgProp.imgHeight, my_texture, 255);
+	// FIXME: PNGU_DecodeTo4x4RGBA8 (ctx, imgProp.imgWidth, imgProp.imgHeight, my_texture, 255);
+	PNGU_DecodeTo4x4RGBA8 (ctx, imgProp.imgWidth, imgProp.imgHeight, &width, &height, my_texture);
 	PNGU_ReleaseImageContext (ctx);
 	DCFlushRange (my_texture, imgProp.imgWidth * imgProp.imgHeight * 4);
 	return my_texture;
 }
 
-inline void GRRLIB_DrawImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], float degrees, float scaleX, f32 scaleY, u8 alpha ){
+/* inline */ void GRRLIB_DrawImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], float degrees, float scaleX, f32 scaleY, u8 alpha ){
    GXTexObj texObj;
 
 	GX_InitTexObj(&texObj, data, width,height, GX_TF_RGBA8,GX_CLAMP, GX_CLAMP,GX_FALSE);
@@ -233,7 +236,7 @@ inline void GRRLIB_DrawImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[],
 
 }
 
-inline void GRRLIB_DrawColImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], float degrees, float scaleX, f32 scaleY, u32 col ){
+/* inline */ void GRRLIB_DrawColImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], float degrees, float scaleX, f32 scaleY, u32 col ){
    GXTexObj texObj;
 
     GXColor c = GRRLIB_Splitu32(col);
@@ -331,7 +334,7 @@ f32 t2=1;
 
 }
 
-inline void GRRLIB_DrawGTile(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], u16 chars_wide, u16 chars_high,float degrees, float scaleX, f32 scaleY, u32 col, u16 frame){
+/* inline */ void GRRLIB_DrawGTile(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], u16 chars_wide, u16 chars_high,float degrees, float scaleX, f32 scaleY, u32 col, u16 frame){
 GXTexObj texObj;
 f32 s1= ((frame    %chars_wide))    /(f32)chars_wide;
 f32 s2= ((frame    %chars_wide)+1)    /(f32)chars_wide;
