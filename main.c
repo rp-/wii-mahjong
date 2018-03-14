@@ -144,6 +144,11 @@ static void initMain()
 	if(!loadConfig(FILE_CFG)) {
 		// get the language of the Wii menu and map this to the Mahjongg Wii languages
 		if(CONF_GetLanguage()<7) opt_lang = languages[CONF_GetLanguage()];
+
+        // dirty hack to force English if not German as default
+        if (opt_lang != 2) {
+            opt_lang = 1;
+        }
 	}
 	GRRLIB_Widescreen(opt_widescreen);
 
@@ -327,3 +332,4 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+// vim:et sw=4 ts=4 ai

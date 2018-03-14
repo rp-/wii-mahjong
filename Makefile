@@ -1,4 +1,4 @@
-DOL := wiimahjongg.dol
+DOL := wii-mahjong.dol
 INSTALLFOLDER := mahjongg
 INSTALLDOL := $(INSTALLFOLDER)/boot.dol
 
@@ -38,5 +38,6 @@ clean:
 	$(MAKE) -f Makefile.DevKit clean
 	rm -Rf $(INSTALLFOLDER).zip $(INSTALLFOLDER).7z $(INSTALLDOL)
 	rm -f mahjongglayouts.c mahjongglayouts.h
-
+run: $(DOL)
+	wiiload $(DOL)
 

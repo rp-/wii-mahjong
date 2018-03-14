@@ -2,10 +2,13 @@
  <app version="0.96">
    <name>MahJongg Wii</name>
    <coder>rp</coder>
-   <version>0.97</version>
+   <version>0.98</version>
    <release_date>200912200000</release_date>
    <short_description>MahJongg solitaire for Wii</short_description>
    <long_description>
+v0.98 Changelog:
+* set default language as English on Japan wii.
+
 v0.97 Changelog:
 * build with new devkitpro r18, libogc 1.8.1, libfat 1.0.5
 * fix new high score always shown

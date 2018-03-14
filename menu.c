@@ -198,12 +198,12 @@ void initMenu() {
 
 	if(opt_lang==-1)
 		initLangMenu();
-	else {
+//	else {
 	    if( curtext == 0) {
             setLanguage();
 	    }
 		initMainMenu();
-	}
+//	}
 }
 
 static void setLanguage() {
@@ -212,7 +212,7 @@ static void setLanguage() {
 		tex_japwhiteletters=GRRLIB_LoadTexture(japanwhite_png);
 		tex_numbers=GRRLIB_LoadTexture(gamenumbers_png);
 
-		tex_numbers=GRRLIB_LoadTexture(gamenumbers_png);
+		//tex_numbers=GRRLIB_LoadTexture(gamenumbers_png);
 		GRRLIB_SetFont(tex_numbers,20, 24, "1234567890:x-", 13, 1, numwidths, 0);
 
 		GRRLIB_SetFont(tex_japwhiteletters,44,48,japanese_map,13,8, japanwidths,3);
@@ -1131,3 +1131,5 @@ static void playClick() {
     if( opt_sound > 0)
         SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 36000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
 }
+
+// vim:et sw=4 ts=4 ai
