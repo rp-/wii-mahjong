@@ -40,4 +40,7 @@ clean:
 	rm -f mahjongglayouts.c mahjongglayouts.h
 run: $(DOL)
 	wiiload $(DOL)
+rebuild: sound gfx layouts
+	rm -f build/*.o
+	$(MAKE) -f Makefile.DevKit
 

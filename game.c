@@ -1595,7 +1595,7 @@ static void removeTile(int selnum) {
 	clearSelected(selnum);
 }
 
-static void clearSelected(selnum) {
+static void clearSelected(int selnum) {
 	sel[selnum].type=SEL_NONE;
 	sel[selnum].tile=BLANK;
 }

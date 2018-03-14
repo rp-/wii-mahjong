@@ -454,12 +454,13 @@ void drawMenu(WPADData *wd) {
 
 			for(x=0;x<6;x++) {
 				int tx = x + (curpage==0?0:6);
+                // FIXME: maybe wrong for fix misleading ident
 				if(!(x==msel))
 					GRRLIB_DrawImg(layouths[x][0]+4, layouths[x][1]-8, 168, 196,tex_shade, 0, 1, 0.8, 255);
-					if(opt_lang==JAPANESE)
-						GRRLIB_GPrintf(layouths[x][0]+92,layouths[x][1]+152,0xFFFFFFFF,1,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_LAYOUT_DEFAULT+tx]);
-					else
-						GRRLIB_GPrintf(layouths[x][0]+77,layouths[x][1]+152,0xFFFFFFFF,0.55,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_LAYOUT_DEFAULT+tx]);
+                if(opt_lang==JAPANESE)
+                    GRRLIB_GPrintf(layouths[x][0]+92,layouths[x][1]+152,0xFFFFFFFF,1,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_LAYOUT_DEFAULT+tx]);
+                else
+                    GRRLIB_GPrintf(layouths[x][0]+77,layouths[x][1]+152,0xFFFFFFFF,0.55,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_LAYOUT_DEFAULT+tx]);
 			}
 
 			if(curpage==0) {
@@ -492,12 +493,13 @@ void drawMenu(WPADData *wd) {
 			}
 
 			for(x=0;x<6;x++) {
+                // FIXME: maybe wrong for mis-ident
 				if(!(x==msel))
 					GRRLIB_DrawImg(layouths[x][0]+4, layouths[x][1]-8, 168, 196,tex_shade, 0, 1, 0.8, 255);
-					if(opt_lang==JAPANESE)
-						GRRLIB_GPrintf(layouths[x][0]+92,layouths[x][1]+152,0xFFFFFFFF,1,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_TILESET_DEFAULT+x]);
-					else
-						GRRLIB_GPrintf(layouths[x][0]+77,layouths[x][1]+152,0xFFFFFFFF,0.55,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_TILESET_DEFAULT+x]);
+                if(opt_lang==JAPANESE)
+                    GRRLIB_GPrintf(layouths[x][0]+92,layouths[x][1]+152,0xFFFFFFFF,1,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_TILESET_DEFAULT+x]);
+                else
+                    GRRLIB_GPrintf(layouths[x][0]+77,layouths[x][1]+152,0xFFFFFFFF,0.55,0.8, ALIGN_CENTRE,CUR_FONT(msel==x),curtext[LNG_TILESET_DEFAULT+x]);
 			}
 		}
 		break;

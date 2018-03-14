@@ -91,7 +91,7 @@ static void processMenuOption(int menuopt) {
 	}
 }
 
-static void countevs(int chan, const WPADData *data) {
+static void countevs(long int chan, const WPADData *data) {
 	evctr++;
 }
 

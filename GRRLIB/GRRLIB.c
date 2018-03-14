@@ -127,7 +127,7 @@ extern void *GRRLIB_LoadJPG(const unsigned char *src, unsigned int size) {
 
 	/* Set the source buffer */
 	// FIXME: jpeg_memory_src(&cinfo, src, size);
-	jpeg_mem_src(&cinfo, src, size);
+	jpeg_mem_src(&cinfo, (unsigned char*)src, size);
 
 	/* Read the default header information */
 	jpeg_read_header(&cinfo, TRUE);
