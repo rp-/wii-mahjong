@@ -198,9 +198,9 @@ Stealing - players can select tiles already selected by the other player thus di
 Thank you to all the following:
 
 ## Programming 
-by JustWoody
-v0.95~v0.97 by Rene Peinthor http://rp.oldsch00l.com
-v0.98 by Daniel YC Lin http://github.com/ github.com/dlintw/wii-mahjong
+* by JustWoody
+* v0.95~v0.97 by Rene Peinthor http://rp.oldsch00l.com
+* v0.98 by Daniel YC Lin http://github.com/ github.com/dlintw/wii-mahjong
 
 ## Graphics 
 * Graphics by DayDreamOz
