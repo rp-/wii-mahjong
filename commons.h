@@ -73,5 +73,4 @@ extern unsigned long g_scores[LAYOUTS * 2];
 
 extern bool opt_rumble, opt_hoverhint, opt_widescreen, opt_voices;
 extern int opt_sound, opt_music, opt_layout, opt_lang, opt_tileset;
-
 #endif

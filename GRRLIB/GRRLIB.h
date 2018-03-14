@@ -46,7 +46,6 @@ u8 * GRRLIB_LoadTexture(const unsigned char my_png[]);
 void GRRLIB_DrawImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], float degrees, float scaleX, f32 scaleY, u8 alphaF );
 void GRRLIB_DrawColImg(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], float degrees, float scaleX, f32 scaleY, u32 c );
 
-
 void GRRLIB_DrawTile(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], float degrees, float scaleX, f32 scaleY, u8 alpha, f32 frame,f32 maxframe );
 void GRRLIB_DrawGTile(f32 xpos, f32 ypos, u16 width, u16 height, u8 data[], u16 chars_wide, u16 chars_high,float degrees, float scaleX, f32 scaleY, u32 col, u16 frame);
 
@@ -77,5 +76,4 @@ void GRRLIB_Stop();
 void GRRLIB_Render ();
 
 bool GRRLIB_ScrShot(const char *text,...);
-
 #endif
