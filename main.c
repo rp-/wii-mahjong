@@ -12,11 +12,9 @@
 #include <wiiuse/wpad.h>
 #include <unistd.h>
 #include <fat.h>
-
-#include "asndlib.h"             // sound library
-
-#include "gcmodplay.h"           // modplayer
-
+#include <asndlib.h>
+#include <aesndlib.h>
+#include <gcmodplay.h>           // modplayer
 #include "GRRLIB/GRRLIB.h"
 
 #include "commons.h"
@@ -25,12 +23,12 @@
 #include "game.h"
 #include "disk.h"
 
-#include "sound/sushi_mod.h"
-#include "sound/dojo_dan_oriental_mod.h"
-#include "sound/graveyard_mod.h"
-#include "sound/egypt_crap_mod.h"
-#include "sound/childhood_mod.h"
-#include "sound/nebulos_mod.h"
+#include "sushi_mod.h"
+#include "dojo_dan_oriental_mod.h"
+#include "graveyard_mod.h"
+#include "egypt_crap_mod.h"
+#include "childhood_mod.h"
+#include "nebulos_mod.h"
 
 #include "gfx/bigmenuback_jpg.h"
 #include "gfx/credits_png.h"
@@ -68,7 +66,7 @@ static void processMenuOption(int menuopt)
             killMenuLanguages();
             MODPlay_Unload (&mod_track);
             WPAD_Shutdown();
-            SND_End();
+            //FIXME: SND_End();
             GRRLIB_Stop();
             saveConfig(FILE_CFG);
             // if we have been launched from a channel then reset to menu
@@ -190,17 +188,18 @@ int main(int argc, char* argv[])
     WPAD_SetPowerButtonCallback(WiimotePowerPressed);
     rmode = VIDEO_GetPreferredMode(NULL);
 
-    SND_Init(INIT_RATE_48000);   // Initialize the Sound Lib
+    //FIXME: SND_Init(INIT_RATE_48000);   // Initialize the Sound Lib
 
+    AESND_Init(NULL);
     MODPlay_Init(&mod_track);
 
-    SND_Pause(0);                // the sound loop is running now
+    //FIXME: SND_Pause(0);                // the sound loop is running now
+    ASND_Pause(0);                // the sound loop is running now
 
                                  // set the MOD song
     if (MODPlay_SetMOD (&mod_track, dojo_dan_oriental_mod) < 0 ) {
         MODPlay_Unload (&mod_track);
-    }
-    else {
+    } else {
         // set the music volume to the minimum so we don't hear the music before saved volume is known
         MODPlay_SetVolume( &mod_track, 0,0);
         MODPlay_Start (&mod_track);// Play the MOD
@@ -333,7 +332,7 @@ int main(int argc, char* argv[])
     killMenuLanguages();
     MODPlay_Unload (&mod_track);
     WPAD_Shutdown();
-    SND_End();
+    //FIXME: SND_End();
     GRRLIB_Stop();
     saveConfig(FILE_CFG);
     SYS_ResetSystem(HWButton, 0, 0);

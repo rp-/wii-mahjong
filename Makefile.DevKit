@@ -40,8 +40,8 @@ LDFLAGS	=	$(MACHDEP) -mrvl -Wl,-Map,$(notdir $@).map
 #LIBS	:=	 -lfat -lwiiuse -lmodplay -laesnd -lasnd -lbte -logc -lm
 LIBS	:= -lpngu -lpng -ljpeg -lz -lfat
 LIBS	+= -lwiiuse
-LIBS	+= -lmodplay -laesnd -lasnd
-LIBS	+= -lbte -logc -lm
+LIBS	+= -lbte -lmodplay -laesnd -lasnd
+LIBS	+= -logc -lm
 
 
 #---------------------------------------------------------------------------------
@@ -136,6 +136,13 @@ $(OUTPUT).elf: $(OFILES)
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	$(bin2o)
+#---------------------------------------------------------------------------------
+%.mod.o %_mod.h :       %.mod
+#---------------------------------------------------------------------------------
+	        @echo $(notdir $<)
+		        $(bin2o)
+#---------------------------------------------------------------------------------
+			 
 
 -include $(DEPENDS)
 
