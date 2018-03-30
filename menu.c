@@ -9,7 +9,7 @@
 // FIXME:#include "lib/libpng/pngu/pngu.h"
 #include <pngu.h>
 #include "GRRLIB/GRRLIB.h"
-#include "asndlib.h"             // sound library
+#include <aesndlib.h>
 
 #include "commons.h"
 #include "menu.h"
@@ -85,6 +85,7 @@
 #define TILESET_MENU 6
 #define HIGHSCORE_MENU 7
 
+extern AESNDPB *sound1;
 //function definitions
 static void drawHighscoreMenu();
 
@@ -184,8 +185,7 @@ static int soundhs[5][4] =
     }
     ,
     {
-        495,395,100,44
-    }
+        495,395,100,44 }
     ,
     {
         263,60,116,48
@@ -1352,14 +1352,14 @@ static void killHighscoreMenu()
 static void playWrong()
 {
     if( opt_sound > 0)
-        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+        AESND_PlayVoice(sound1, VOICE_MONO16, &gromb_raw, gromb_raw_size, 22050, 0, 0);
 }
 
 
 static void playClick()
 {
     if( opt_sound > 0)
-        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 36000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
+        AESND_PlayVoice(sound1, VOICE_MONO16, &Click17a_raw, Click17a_raw_size, 36000, 0, 0);
 }
 
 

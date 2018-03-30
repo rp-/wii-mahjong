@@ -36,6 +36,10 @@
 #include "gfx/handpointerred_png.h"
 #include "gfx/handpointergreen_png.h"
 
+AESNDPB *sound1 = NULL;
+AESNDPB *sound2 = NULL;
+AESNDPB *sound3 = NULL;
+AESNDPB *sound4 = NULL;
 Mtx GXmodelView2D;
 static GXRModeObj *rmode = NULL;
 
@@ -66,7 +70,6 @@ static void processMenuOption(int menuopt)
             killMenuLanguages();
             MODPlay_Unload (&mod_track);
             WPAD_Shutdown();
-            //FIXME: SND_End();
             GRRLIB_Stop();
             saveConfig(FILE_CFG);
             // if we have been launched from a channel then reset to menu
@@ -188,12 +191,13 @@ int main(int argc, char* argv[])
     WPAD_SetPowerButtonCallback(WiimotePowerPressed);
     rmode = VIDEO_GetPreferredMode(NULL);
 
-    //FIXME: SND_Init(INIT_RATE_48000);   // Initialize the Sound Lib
-
     AESND_Init(NULL);
+    sound1 = AESND_AllocateVoice(NULL);
+    sound2 = AESND_AllocateVoice(NULL);
+    sound3 = AESND_AllocateVoice(NULL);
+    sound4 = AESND_AllocateVoice(NULL);
     MODPlay_Init(&mod_track);
 
-    //FIXME: SND_Pause(0);                // the sound loop is running now
     ASND_Pause(0);                // the sound loop is running now
 
                                  // set the MOD song
@@ -332,7 +336,6 @@ int main(int argc, char* argv[])
     killMenuLanguages();
     MODPlay_Unload (&mod_track);
     WPAD_Shutdown();
-    //FIXME: SND_End();
     GRRLIB_Stop();
     saveConfig(FILE_CFG);
     SYS_ResetSystem(HWButton, 0, 0);
