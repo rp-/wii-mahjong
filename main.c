@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
     sound4 = AESND_AllocateVoice(NULL);
     MODPlay_Init(&mod_track);
 
-    ASND_Pause(0);                // the sound loop is running now
+    AESND_Pause(0);                // the sound loop is running now
 
                                  // set the MOD song
     if (MODPlay_SetMOD (&mod_track, dojo_dan_oriental_mod) < 0 ) {

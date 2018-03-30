@@ -8,7 +8,7 @@
 #include "commons.h"
 
 #include "GRRLIB/GRRLIB.h"
-#include "asndlib.h"             // sound library
+#include "aesndlib.h"             // sound library
 
 #include "disk.h"
 
@@ -79,6 +79,11 @@
 #define GAME_FINISHED 4
 #define GAME_NOMORE 5
 #define GAME_BOARDINIT 6
+
+extern AESNDPB *sound1;
+extern AESNDPB *sound2;
+extern AESNDPB *sound3;
+extern AESNDPB *sound4;
 
 // static functions
 static void setLayout(int laynum);
@@ -573,8 +578,10 @@ static void setupGame()
 
     game_state=GAME_PLAY;
 
-    SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 11025, 0,&gong_raw, gong_raw_size, opt_sound, 0, NULL);
-    SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 11025, 40,&gong_raw, gong_raw_size, 0, opt_sound, NULL);
+    AESND_PlayVoice(sound1, VOICE_MONO16, &gong_raw, gong_raw_size, 11025, 0,0);
+    AESND_PlayVoice(sound2, VOICE_MONO16, &gong_raw, gong_raw_size, 11025, 0,0);
+    //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 11025, 0,&gong_raw, gong_raw_size, opt_sound, 0, NULL);
+    //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 11025, 40,&gong_raw, gong_raw_size, 0, opt_sound, NULL);
 }
 
 
@@ -1381,7 +1388,8 @@ static void selectProcessing(WPADData *wd, int player)
     if(gamemode==TWO_PLAYER_COOP && sel[other].type!=SEL_NONE) {
         if(isSameTile(selnum,other)) {
             clearSelected(selnum);
-            SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+	    AESND_PlayVoice(sound1, VOICE_MONO16, &gromb_raw, gromb_raw_size, 22050, 0,0);
+            //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
             return;
         }
         if(checkMatch(selnum,other)) {
@@ -1397,16 +1405,21 @@ static void selectProcessing(WPADData *wd, int player)
         if(gamemode==TWO_PLAYER_VERSUS && sel[other].type!=SEL_NONE && isSameTile(selnum,other)) {
             clearSelected(other);
             if(player==0) {
-                SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&Haha_raw, Haha_raw_size, opt_sound, opt_sound, NULL);
-                SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 600,&nani_raw, nani_raw_size, opt_sound, opt_sound, NULL);
+	        AESND_PlayVoice(sound1, VOICE_MONO16, &Haha_raw, Haha_raw_size, 44100, 0,0);
+	        AESND_PlayVoice(sound2, VOICE_MONO16, &nani_raw, nani_raw_size, 44100, 0,0);
+                //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&Haha_raw, Haha_raw_size, opt_sound, opt_sound, NULL);
+                //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 600,&nani_raw, nani_raw_size, opt_sound, opt_sound, NULL);
             }
             else {
-                SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&Haha2_raw, Haha2_raw_size, opt_sound, opt_sound, NULL);
-                SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 600,&doshiyo_raw, doshiyo_raw_size, opt_sound, opt_sound, NULL);
+	        AESND_PlayVoice(sound1, VOICE_MONO16, &Haha2_raw, Haha2_raw_size, 44100, 0,0);
+	        AESND_PlayVoice(sound2, VOICE_MONO16, &doshiyo_raw, doshiyo_raw_size, 44100, 0,0);
+                //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&Haha2_raw, Haha2_raw_size, opt_sound, opt_sound, NULL);
+                //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 600,&doshiyo_raw, doshiyo_raw_size, opt_sound, opt_sound, NULL);
             }
         }
         else
-            SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 8000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
+	    AESND_PlayVoice(sound1, VOICE_MONO16, &Click17a_raw, Click17a_raw_size, 8000, 0,0);
+            //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 8000, 0,&Click17a_raw, Click17a_raw_size, opt_sound, opt_sound, NULL);
         return;
     }
 
@@ -1416,7 +1429,8 @@ static void selectProcessing(WPADData *wd, int player)
     if(isSameTile(selnum, selnum-1)) {
         clearSelected(selnum);
         clearSelected(selnum-1);
-        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+	AESND_PlayVoice(sound1, VOICE_MONO16, &gromb_raw, gromb_raw_size, 22050, 0, 0);
+        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
         return;
     }
 
@@ -1434,7 +1448,8 @@ static void selectProcessing(WPADData *wd, int player)
         clearSelected(selnum);
 
         // no match so play the unmatched pair sound
-        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+	AESND_PlayVoice(sound1, VOICE_MONO16, &gromb_raw, gromb_raw_size, 22050, 0, 0);
+        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
     }
 }
 
@@ -1491,50 +1506,68 @@ static void removeMatched(int player,int s1, int s2)
             case 0 :
                 switch(multi[player]) {
                     case 1 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &oh_raw, oh_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     case 2 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &ohhh_raw, ohhh_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     case 3 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 300,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &oh_raw, oh_raw_size, 44100, 0,0);
+		        AESND_PlayVoice(sound2, VOICE_MONO16, &oh_raw, oh_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 300,&oh_raw, oh_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     case 4 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 400,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &ohhh_raw, ohhh_raw_size, 44100, 0,0);
+		        AESND_PlayVoice(sound2, VOICE_MONO16, &ohhh_raw, ohhh_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 400,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     case 5 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&aiee_raw, aiee_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &aiee_raw, aiee_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&aiee_raw, aiee_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     default :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 320,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&aiee_raw, aiee_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &ohhh_raw, ohhh_raw_size, 44100, 0,0);
+		        AESND_PlayVoice(sound2, VOICE_MONO16, &aiee_raw, aiee_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 320,&ohhh_raw, ohhh_raw_size, opt_sound, opt_sound, NULL);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&aiee_raw, aiee_raw_size, opt_sound, opt_sound, NULL);
                         break;
                 }
                 break;
             case 1 :
                 switch(multi[player]) {
                     case 1 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &mm_raw, mm_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     case 2 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &mmmm_raw, mmmm_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     case 3 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 260,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &mm_raw, mm_raw_size, 44100, 0,0);
+		        AESND_PlayVoice(sound2, VOICE_MONO16, &mm_raw, mm_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 260,&mm_raw, mm_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     case 4 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 300,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &mmmm_raw, mmmm_raw_size, 44100, 0,0);
+		        AESND_PlayVoice(sound2, VOICE_MONO16, &mmmm_raw, mmmm_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 300,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     case 5 :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&uss_raw, uss_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &uss_raw, uss_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&uss_raw, uss_raw_size, opt_sound, opt_sound, NULL);
                         break;
                     default :
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 280,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&uss_raw, uss_raw_size, opt_sound, opt_sound, NULL);
+		        AESND_PlayVoice(sound1, VOICE_MONO16, &mm_raw, mm_raw_size, 44100, 0,0);
+		        AESND_PlayVoice(sound2, VOICE_MONO16, &uss_raw, uss_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 280,&mmmm_raw, mmmm_raw_size, opt_sound, opt_sound, NULL);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&uss_raw, uss_raw_size, opt_sound, opt_sound, NULL);
                         break;
                 }
                 break;
@@ -1542,7 +1575,8 @@ static void removeMatched(int player,int s1, int s2)
     }
     else {
         for(x=0;x<multi[player]+1 && x<5;x++) {
-            SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, x*40,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
+	    AESND_PlayVoice(sound1, VOICE_MONO16, &ptwiiing_raw, ptwiiing_raw_size, 22050, 0,0);
+            //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, x*40,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
             //			SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 8000, 20+x*80,&ptwiiing_raw, ptwiiing_raw_size, 0, opt_sound, NULL);
         }
     }
@@ -1579,12 +1613,14 @@ static void finishGame()
     if(gamemode==TWO_PLAYER_VERSUS) {
         if(score[0]>score[1]) {
             totals[0]++;
-            SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&a_yokatta_raw, a_yokatta_raw_size, opt_sound, opt_sound, NULL);
+	    AESND_PlayVoice(sound1, VOICE_MONO16, &a_yokatta_raw, a_yokatta_raw_size, 44100, 0,0);
+            //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&a_yokatta_raw, a_yokatta_raw_size, opt_sound, opt_sound, NULL);
         }
         else
         if(score[1]>score[0]) {
             totals[1]++;
-            SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&yatta_raw, yatta_raw_size, opt_sound, opt_sound, NULL);
+	    AESND_PlayVoice(sound1, VOICE_MONO16, &yatta_raw, yatta_raw_size, 44100, 0,0);
+            //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&yatta_raw, yatta_raw_size, opt_sound, opt_sound, NULL);
         }
     }
     else {
@@ -1593,7 +1629,8 @@ static void finishGame()
 
         int x;
         for(x=0;x<8;x++) {
-            SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, x*148,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
+	    AESND_PlayVoice(sound1, VOICE_MONO16, &ptwiiing_raw, ptwiiing_raw_size, 44100, 0,0);
+            //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, x*148,&ptwiiing_raw, ptwiiing_raw_size, ((x+1)%2)*opt_sound, (x%2)*opt_sound, NULL);
         }
     }
 }
@@ -1753,7 +1790,8 @@ static void findHint()
     int tn,x,y,z;
 
     if(!goesLeft()) {
-        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
+	AESND_PlayVoice(sound1, VOICE_MONO16, &gromb_raw, gromb_raw_size, 22050, 0,0);
+        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 22050, 0,&gromb_raw, gromb_raw_size, opt_sound, opt_sound, NULL);
         return;
     }
 
@@ -1777,7 +1815,8 @@ static void findHint()
                     if(s==6) {
                         // play sound and add 30 seconds to the time
                         startTime-=30;
-                        SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&ptwiiing_raw, ptwiiing_raw_size, opt_sound, opt_sound, NULL);
+	                AESND_PlayVoice(sound1, VOICE_MONO16, &ptwiiing_raw, ptwiiing_raw_size, 44100, 0,0);
+                        //SND_SetVoice(SND_GetFirstUnusedVoice(), VOICE_MONO_16BIT, 44100, 0,&ptwiiing_raw, ptwiiing_raw_size, opt_sound, opt_sound, NULL);
                         return;
                     }
                 }

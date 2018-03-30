@@ -24,9 +24,11 @@ v0.98 changes (devloping version)
 * Build on brand new devkitpro.
 * Build with old GRRLIB combined new grrlib's sub-libs(eg. zlib,...)
 * Fix bug of default language of Japan wii.(dirty hack)
+* Use aesnd to play mod and wav(raw) sound
 * Known issues:
   * English & German are the only two workable languages.
-  * mod music can't play
+  * sound volume
+  * sound slot
 
 v0.97 changes
 

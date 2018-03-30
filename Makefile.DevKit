@@ -40,7 +40,7 @@ LDFLAGS	=	$(MACHDEP) -mrvl -Wl,-Map,$(notdir $@).map
 #LIBS	:=	 -lfat -lwiiuse -lmodplay -laesnd -lasnd -lbte -logc -lm
 LIBS	:= -lpngu -lpng -ljpeg -lz -lfat
 LIBS	+= -lwiiuse
-LIBS	+= -lbte -lmodplay -laesnd -lasnd
+LIBS	+= -lbte -lmodplay -laesnd
 LIBS	+= -logc -lm
 
 
