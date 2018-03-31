@@ -1,5 +1,5 @@
 DOL := wii-mahjong.dol
-INSTALLFOLDER := mahjongg
+INSTALLFOLDER := mahjong
 INSTALLDOL := $(INSTALLFOLDER)/boot.dol
 
 .PHONY: all clean sound gfx layouts install 7zip zip
