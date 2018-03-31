@@ -343,5 +343,8 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-
+void playRaw(const void *buf, const u32 len, u32 freq, u16 vol_left, u16 vol_right) {
+    AESND_PlayVoice(sound1, VOICE_MONO16, buf, len, freq, 1, 0);
+    AESND_SetVoiceVolume(sound1, vol_left*opt_sound/256, vol_right*opt_sound/256);
+}
 // vim:et sw=4 ts=4 ai
