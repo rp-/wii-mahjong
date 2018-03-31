@@ -12,7 +12,6 @@
 #include <wiiuse/wpad.h>
 #include <unistd.h>
 #include <fat.h>
-#include <asndlib.h>
 #include <aesndlib.h>
 #include <gcmodplay.h>           // modplayer
 #include "GRRLIB/GRRLIB.h"
@@ -36,10 +35,6 @@
 #include "gfx/handpointerred_png.h"
 #include "gfx/handpointergreen_png.h"
 
-AESNDPB *sound1 = NULL;
-AESNDPB *sound2 = NULL;
-AESNDPB *sound3 = NULL;
-AESNDPB *sound4 = NULL;
 Mtx GXmodelView2D;
 static GXRModeObj *rmode = NULL;
 
@@ -62,6 +57,22 @@ u8 *layouts[LAYOUTS];            //extern
 unsigned long g_scores[LAYOUTS * 2];//extern
 
 static const int languages[] = {JAPANESE,ENGLISH,GERMAN,FRENCH,SPANISH,ITALIAN,DUTCH};
+#define MAX_SOUND_SLOT 2
+AESNDPB *sound[MAX_SOUND_SLOT];
+
+static int next_voice_idx = 0;
+void Init_Voice() {
+    for (int i=0; i<MAX_SOUND_SLOT; i++) {
+        sound[i] = NULL;
+        sound[i] = AESND_AllocateVoice(NULL);
+    }
+}
+void Free_Voice() {
+    for (int i=0; i<MAX_SOUND_SLOT; i++) {
+        AESND_FreeVoice(sound[i]);
+        sound[i] = NULL;
+    }
+}
 
 static void processMenuOption(int menuopt)
 {
@@ -69,6 +80,7 @@ static void processMenuOption(int menuopt)
         case EXIT :
             killMenuLanguages();
             MODPlay_Unload (&mod_track);
+            Free_Voice();
             WPAD_Shutdown();
             GRRLIB_Stop();
             saveConfig(FILE_CFG);
@@ -175,6 +187,8 @@ static void initMain()
 }
 
 
+
+
 int main(int argc, char* argv[])
 {
     u8 *tex_ptrone=GRRLIB_LoadTexture(handpointerred_png);
@@ -192,11 +206,8 @@ int main(int argc, char* argv[])
     rmode = VIDEO_GetPreferredMode(NULL);
 
     AESND_Init(NULL);
-    sound1 = AESND_AllocateVoice(NULL);
-    sound2 = AESND_AllocateVoice(NULL);
-    sound3 = AESND_AllocateVoice(NULL);
-    sound4 = AESND_AllocateVoice(NULL);
     MODPlay_Init(&mod_track);
+    Init_Voice();
 
     AESND_Pause(0);                // the sound loop is running now
 
@@ -335,6 +346,7 @@ int main(int argc, char* argv[])
     if(tex_ptrtwo) free(tex_ptrtwo);
     killMenuLanguages();
     MODPlay_Unload (&mod_track);
+    Free_Voice();
     WPAD_Shutdown();
     GRRLIB_Stop();
     saveConfig(FILE_CFG);
@@ -343,8 +355,26 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void playRaw(const void *buf, const u32 len, u32 freq, u16 vol_left, u16 vol_right) {
-    AESND_PlayVoice(sound1, VOICE_MONO16, buf, len, freq, 1, 0);
-    AESND_SetVoiceVolume(sound1, vol_left*opt_sound/256, vol_right*opt_sound/256);
+#define VOICE_RUNNING 0x40000000 // from aesndlib.c
+void playRaw(const void *buf, const u32 len, u32 freq, u16 vol_left, u16 vol_right, u32 delay) {
+    int i=next_voice_idx;
+    /*
+    for (i=0; sound[i] && i < MAX_SOUND_SLOT; i++) {
+        u32 *pFlag = (u32 *)&(((char *)(sound[i]))[40]); // offset 40 is flags
+        if (!(*pFlag & VOICE_RUNNING))
+            break;
+    }
+    */
+    if (i == MAX_SOUND_SLOT)
+        i = 0;
+    if (i > 0 && sound[i] == NULL)
+        i = 0;
+    if (sound[i]) {
+        AESND_PlayVoice(sound[i], VOICE_MONO16, buf, len, freq, delay, 0);
+        AESND_SetVoiceVolume(sound[i], vol_left, vol_right);
+        next_voice_idx = i+1;
+    } else {
+        next_voice_idx = 0;
+    }
 }
 // vim:et sw=4 ts=4 ai

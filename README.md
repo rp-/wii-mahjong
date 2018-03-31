@@ -27,7 +27,7 @@ v0.98 changes (devloping version)
 * Use aesnd to play mod and wav(raw) sound
 * Known issues:
   * English & German are the only two workable languages.
-  * sound slot
+  * Simple two sound slot
 
 v0.97 changes
 

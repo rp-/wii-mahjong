@@ -1353,7 +1353,7 @@ static void killHighscoreMenu()
 static void playWrong()
 {
     if( opt_sound > 0)
-        playRaw(&gromb_raw, gromb_raw_size, 22050, 255,255);
+        playRaw(&gromb_raw, gromb_raw_size, 22050, opt_sound, opt_sound, 0);
         //AESND_PlayVoice(sound1, VOICE_MONO16, &gromb_raw, gromb_raw_size, 22050, 0, 0);
 }
 
@@ -1361,7 +1361,7 @@ static void playWrong()
 static void playClick()
 {
     if( opt_sound > 0)
-        playRaw(&Click17a_raw, Click17a_raw_size, 36000, 255,255);
+        playRaw(&Click17a_raw, Click17a_raw_size, 36000, opt_sound, opt_sound, 0);
         //AESND_PlayVoice(sound1, VOICE_MONO16, &Click17a_raw, Click17a_raw_size, 36000, 0, 0);
 }
 
