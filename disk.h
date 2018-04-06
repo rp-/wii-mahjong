@@ -24,5 +24,4 @@ int saveHighscore( const char* scoreFileName, unsigned long scores[]);
  * @return 1 load was successfull.
  **/
 int loadHighscores( const char* scoreFileName, unsigned long scores[]);
-
-#endif // DISK_H_INCLUDED
+#endif                           // DISK_H_INCLUDED

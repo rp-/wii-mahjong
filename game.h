@@ -12,5 +12,4 @@ void drawGame();
 bool gameWiimote(WPADData *wd_one, u32 btns_one, WPADData *wd_two, u32 btns_two);
 
 int whatGameMode();
-
 #endif

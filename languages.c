@@ -11,7 +11,9 @@ int lng_IndexFromString( const char* str)
     return index;
 }
 
-const char* const english_lng[] = {
+
+const char* const english_lng[] =
+{
     "PLAY GAME",
     "HI-SCORES",
     "GAME OPTIONS",
@@ -69,7 +71,8 @@ const char* const english_lng[] = {
     "TIKAL"
 };
 
-const char* const german_lng[] = {
+const char* const german_lng[] =
+{
     "SPIELEN",
     "HI-SCORES",
     "SPIEL OPTIONEN",

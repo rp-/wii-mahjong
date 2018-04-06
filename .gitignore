@@ -1,0 +1,10 @@
+build/
+*.cbp
+screenshots/
+*.dol
+sound/*.raw
+sound/*.[ch]
+gfx/*.[hc]
+mahjongglayouts.[ch]
+mahjongg.layout
+*.elf

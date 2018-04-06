@@ -1,7 +1,7 @@
 #ifndef _commons_h_
 #define _commons_h_
 
-#define VERSION_STRING "V097"
+#define VERSION_STRING "V098"
 
 #define MUSIC_BAR 2000
 #define SOUND_BAR 3000
@@ -73,5 +73,4 @@ extern unsigned long g_scores[LAYOUTS * 2];
 
 extern bool opt_rumble, opt_hoverhint, opt_widescreen, opt_voices;
 extern int opt_sound, opt_music, opt_layout, opt_lang, opt_tileset;
-
 #endif

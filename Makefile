@@ -1,5 +1,5 @@
-DOL := wiimahjongg.dol
-INSTALLFOLDER := mahjongg
+DOL := wii-mahjong.dol
+INSTALLFOLDER := mahjong
 INSTALLDOL := $(INSTALLFOLDER)/boot.dol
 
 .PHONY: all clean sound gfx layouts install 7zip zip
@@ -29,10 +29,18 @@ install: $(INSTALLDOL)
 zip: $(INSTALLDOL)
 	zip $(INSTALLFOLDER).zip $(INSTALLFOLDER)/*
 
+cls:
+	rm -f *.dol *.elf
 clean:
 	cd sound && $(MAKE) clean
 	cd gfx && $(MAKE) clean
 	cd layouts && $(MAKE) clean
 	$(MAKE) -f Makefile.DevKit clean
 	rm -Rf $(INSTALLFOLDER).zip $(INSTALLFOLDER).7z $(INSTALLDOL)
+	rm -f mahjongglayouts.c mahjongglayouts.h
+run: $(DOL)
+	wiiload $(DOL)
+rebuild: sound gfx layouts
+	rm -f build/*.o
+	$(MAKE) -f Makefile.DevKit
 
